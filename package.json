@@ -40,6 +40,7 @@
     "@capacitor/cli": "2.4.6",
     "@cypress/webpack-preprocessor": "5.5.0",
     "@ionic/angular-toolkit": "^2.3.3",
+    "@ionic/lab": "3.2.10",
     "@types/jest": "26.0.20",
     "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",
