@@ -66,3 +66,14 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark mode variables go here */
+  }
+}
+
+/* Fallback for older browsers or manual mode */
+body.dark {
+  /* Dark mode variables go here */
+}

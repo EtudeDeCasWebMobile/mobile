@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {WidgetModule} from '../widget/widget.module';
 import {IonicModule} from '@ionic/angular';
+import {IonicStorageModule} from '@ionic/storage';
 
 
 
@@ -9,11 +9,13 @@ import {IonicModule} from '@ionic/angular';
   declarations: [],
   imports: [
     CommonModule,
-    IonicModule.forRoot()
+    IonicModule.forRoot(),
+    IonicStorageModule.forRoot()
   ],
   exports: [
     CommonModule,
-    IonicModule
+    IonicModule,
+    IonicStorageModule
   ]
 })
 export class SharedModule { }
