@@ -9,15 +9,18 @@ import {AppRoutingModule} from './app-routing.module';
 import {APP_BASE_HREF} from '@angular/common';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import {SharedModule} from './modules/shared/shared.module';
+import {WidgetModule} from './modules/widget/widget.module';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(),
     AppRoutingModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    SharedModule,
+    WidgetModule
   ],
   providers: [
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},

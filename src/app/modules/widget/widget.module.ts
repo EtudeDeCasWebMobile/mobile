@@ -1,12 +1,20 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {NavbarComponent} from './navbar/navbar.component';
+import {SharedModule} from '../shared/shared.module';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    NavbarComponent
+  ],
+  exports: [
+    NavbarComponent
+  ],
   imports: [
-    CommonModule
+    CommonModule,
+    SharedModule
   ]
 })
-export class WidgetModule { }
+export class WidgetModule {
+}
