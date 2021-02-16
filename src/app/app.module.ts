@@ -11,6 +11,7 @@ import {ServiceWorkerModule} from '@angular/service-worker';
 import {environment} from '../environments/environment';
 import {SharedModule} from './modules/shared/shared.module';
 import {LayoutModule} from './modules/layout/layout.module';
+import {CoreModule} from './core/core.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,7 +21,8 @@ import {LayoutModule} from './modules/layout/layout.module';
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
     SharedModule,
-    LayoutModule
+    LayoutModule,
+    CoreModule
   ],
   providers: [
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
