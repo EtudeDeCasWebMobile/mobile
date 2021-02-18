@@ -1,9 +1,10 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {IonicModule} from '@ionic/angular';
 import {IonicStorageModule} from '@ionic/storage';
 import {ReactiveFormsModule} from '@angular/forms';
-
+import {LeafletModule} from '@asymmetrik/ngx-leaflet';
+import {RouterModule} from '@angular/router';
 
 
 @NgModule({
@@ -12,14 +13,18 @@ import {ReactiveFormsModule} from '@angular/forms';
     CommonModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    LeafletModule,
+    RouterModule
   ],
   exports: [
     CommonModule,
     IonicModule,
     IonicStorageModule,
-    ReactiveFormsModule
-
+    ReactiveFormsModule,
+    LeafletModule,
+    RouterModule
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+}

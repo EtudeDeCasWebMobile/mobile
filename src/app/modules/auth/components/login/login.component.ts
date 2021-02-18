@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {Router} from '@angular/router';
+import {ToastController} from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -7,8 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  loginForm: FormGroup;
 
-  ngOnInit() {}
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    private readonly router: Router,
+    private readonly toastController: ToastController
+  ) {
+  }
+
+  ngOnInit() {
+  }
+
+  public login(): void {
+
+  }
 
 }
