@@ -11,6 +11,8 @@ import {SharedModule} from './modules/shared/shared.module';
 import {LayoutModule} from './modules/layout/layout.module';
 import {CoreModule} from './core/core.module';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +23,10 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
     SharedModule,
     LayoutModule,
-    CoreModule
+    CoreModule,
+    LeafletModule,
+    FlexLayoutModule,
+    BrowserAnimationsModule
   ],
   providers: [
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},

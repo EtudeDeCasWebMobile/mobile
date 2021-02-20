@@ -5,6 +5,7 @@ import {IonicStorageModule} from '@ionic/storage';
 import {ReactiveFormsModule} from '@angular/forms';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {RouterModule} from '@angular/router';
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 
 @NgModule({
