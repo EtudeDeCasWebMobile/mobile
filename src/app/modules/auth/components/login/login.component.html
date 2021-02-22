@@ -1,36 +1,74 @@
 <div fxLayout="column">
-  <div fxLayout="row" fxLayoutAlign="center"
-    style="background-color: var(--ion-color-primary)">
+  <div fxLayout="row nowrap" fxLayoutAlign="center" class="title-row">
     <img src="/assets/images/app.svg" style="width: 48px;height: 48px;">
     <span class="title" translate>Kouskous</span>
   </div>
-  <img src="/assets/images/top-background.webp"
-       style="width: 100vw;height: 175px;transform: translateY(-1px);">
+  <img src="/assets/images/top-background.webp" class="background-image">
 </div>
 
-
-<!--
 <ion-content>
+  <ion-title color="primary" class="login-title">
+    <span translate>Login</span>
+  </ion-title>
+  <div class="ion-padding form-container">
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="element-list">
+      <div class="input-container" formControlName="email">
+        <ion-label color="primary">
+          <span translate>Email</span>
+        </ion-label>
+        <ion-input
+          class="input-element"
+          placeholder="Enter your email"
+          type="email"
+          inputmode="email"></ion-input>
+      </div>
 
-  <div class="ion-padding">
-    <form (submit)="login()">
-      <ion-list>
-        <ion-item>
-          <ion-label position="floating">Name</ion-label>
-        </ion-item>
-        <br>
-        <ion-item>
-          <ion-label position="floating">Phone</ion-label>
-        </ion-item>
-        <br>
-        <div class="ion-padding">
-          <ion-button expand="block" type="submit" class="ion-no-margin">Create a
-            contact
+      <div class="input-container" formControlName="password">
+        <ion-label color="primary">
+          <span translate>Password</span>
+        </ion-label>
+        <ion-input
+          class="input-element"
+          placeholder="Enter your password"
+          type="password"
+          inputmode="text"
+        ></ion-input>
+      </div>
+      <div>
+        <a [routerLink]="'#'" class="forgot-password">
+          <ion-text>
+            <span translate>Forgot password?</span>
+          </ion-text>
+        </a>
+      </div>
+      <div class="button-container">
+        <ion-button expand="block" type="submit" class="login-button" color="primary">
+          <span translate>Login</span>
+        </ion-button>
+        <div class="anonymous-button-container">
+          <img src="/assets/images/Anonymous.svg" class="anonymous-icon">
+          <ion-button
+            class="anonymous-button"
+            expand="block"
+            shape="round"
+            type="button"
+            color="primary"
+            fill="outline">
+            <span translate>Anonymous</span>
           </ion-button>
         </div>
-      </ion-list>
+      </div>
     </form>
+    <div class="register-container">
+      <ion-text>
+        <span translate>New here ? </span>
+        <a [routerLink]="'/auth/signup'" class="register">
+          <span translate>register</span>
+        </a>
+      </ion-text>
+    </div>
   </div>
+
+
 </ion-content>
--->
 

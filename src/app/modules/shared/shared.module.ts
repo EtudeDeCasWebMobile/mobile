@@ -1,30 +1,22 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {IonicModule} from '@ionic/angular';
-import {IonicStorageModule} from '@ionic/storage';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
-import {RouterModule} from '@angular/router';
-import {FlexLayoutModule} from '@angular/flex-layout';
 
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
-    IonicModule.forRoot(),
-    IonicStorageModule.forRoot(),
-    ReactiveFormsModule,
     LeafletModule,
-    RouterModule
+    FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [
     CommonModule,
-    IonicModule,
-    IonicStorageModule,
-    ReactiveFormsModule,
     LeafletModule,
-    RouterModule
+    FormsModule,
+    ReactiveFormsModule,
   ]
 })
 export class SharedModule {
