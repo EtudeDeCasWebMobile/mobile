@@ -1,23 +1,27 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {CustomValidators} from 'ngx-custom-validators';
 import {Plugins} from '@capacitor/core';
+import {Storage} from '@ionic/storage';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
 const {Modals} = Plugins;
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage implements OnInit, OnDestroy {
 
   loginForm: FormGroup;
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
+    private readonly storage: Storage
   ) {
   }
 
@@ -41,6 +45,7 @@ export class LoginPage implements OnInit {
 
   public login(): void {
     console.log(this.loginForm);
+    this.storage.set('user', {authToken: 'bablablabal'});
   }
 
   public async loginAsAnonymous() {
@@ -50,5 +55,9 @@ export class LoginPage implements OnInit {
     });
     console.log(value);
   }
+
+  ngOnDestroy(): void {
+  }
+
 
 }

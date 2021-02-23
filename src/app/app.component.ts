@@ -1,30 +1,34 @@
-import {Component, OnInit} from '@angular/core';
-import {from} from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {from, interval} from 'rxjs';
 import {Storage} from '@ionic/storage';
 import {AlertController, MenuController} from '@ionic/angular';
 import {Plugins} from '@capacitor/core';
 import {Router} from '@angular/router';
 import {AuthService} from './services/auth.service';
+import {skipWhile, switchMap} from 'rxjs/operators';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
-const {Modals} = Plugins;
+const {Modals, Geolocation} = Plugins;
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly storage: Storage,
     private readonly alertController: AlertController,
     private readonly router: Router,
     private readonly menuController: MenuController,
-    private readonly authService:AuthService
+    private readonly authService: AuthService
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+
     from(this.storage.get('server'))
       .subscribe(async (result) => {
         if (!result) {
@@ -33,6 +37,18 @@ export class AppComponent implements OnInit {
           await this.storage.set('server', value.value);
         }
       });
+
+    interval(5000)
+      .pipe(
+        switchMap(res => this.authService.isAuthenticated$()),
+        skipWhile(res => !res),
+        switchMap(res => from(Geolocation.getCurrentPosition({enableHighAccuracy: true})))
+      )
+      .subscribe(res => {
+        console.log(res);
+      });
+
+
   }
 
   async showPrompt() {
@@ -52,6 +68,9 @@ export class AppComponent implements OnInit {
   public navigate(s: string) {
     this.router.navigateByUrl(s);
     this.menuController.close();
+  }
+
+  ngOnDestroy(): void {
   }
 
 }
