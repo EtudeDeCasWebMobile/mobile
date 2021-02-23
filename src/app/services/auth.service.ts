@@ -20,4 +20,8 @@ export class AuthService {
       .pipe(map(user => !!(!!user && user.authToken)));
   }
 
+  public login(email: string, password: string) {
+    //this.httpClient.post()
+  }
+
 }

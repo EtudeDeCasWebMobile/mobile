@@ -8,7 +8,7 @@ import {AuthService} from './services/auth.service';
 import {skipWhile, switchMap} from 'rxjs/operators';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
-const {Modals, Geolocation} = Plugins;
+const {Modals, Geolocation, Toast} = Plugins;
 
 @AutoUnsubscribe()
 @Component({
@@ -55,6 +55,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     let promptRet = await Modals.prompt({
       title: 'Add a server',
+      inputPlaceholder: 'www.server.com',
+      okButtonTitle: 'Save',
       message: `Add a server URL/IP address`
     });
     if (!(!!promptRet?.value?.match(`[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)`) ||

@@ -4,12 +4,21 @@
       <ion-menu-toggle></ion-menu-toggle>
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>settings</ion-title>
+    <ion-title>
+      <span translate>Settings</span>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="ion-padding">
-
+    <ion-list id="labels-list">
+      <ion-item button lines="full" (click)="changeServerUrl()">
+        <ion-label>
+          <span translate>Server Url</span>
+        </ion-label>
+        <ion-text style="color: grey">{{serverUrl}}</ion-text>
+      </ion-item>
+    </ion-list>
   </div>
 </ion-content>
