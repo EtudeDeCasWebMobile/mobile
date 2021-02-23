@@ -1,8 +1,7 @@
 {
-  "name": "Kouskous",
+  "name": "kouskous",
   "integrations": {
     "capacitor": {}
   },
-  "type": "angular",
-  "id": "8c8cf945"
+  "type": "angular"
 }

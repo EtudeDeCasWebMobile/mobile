@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "Kouskous",
+  "appId": "org.univ.etudecasweb",
+  "appName": "kouskous",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
@@ -11,9 +11,6 @@
   },
   "cordova": {},
   "server": {
-    "url": "http://10.245.163.113:8100",
-    "cleartext": true,
-    "originalUrl": "http://10.245.163.178:8100",
-    "originalCleartext": true
+    "url": "http://10.245.212.23:8100"
   }
 }

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Kouskous</string>
-    <string name="title_activity_main">Kouskous</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="app_name">kouskous</string>
+    <string name="title_activity_main">kouskous</string>
+    <string name="package_name">org.univ.etudecasweb</string>
+    <string name="custom_url_scheme">org.univ.etudecasweb</string>
 </resources>

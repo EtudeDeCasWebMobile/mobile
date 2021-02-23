@@ -1,0 +1,70 @@
+<div fxLayout="column">
+  <div fxLayout="row nowrap" fxLayoutAlign="start center" class="title-row">
+    <img src="/assets/images/app.svg" style="width: 48px;height: 48px;">
+    <span class="title" translate>Kouskous</span>
+  </div>
+  <img src="/assets/images/top-background.webp" class="background-image">
+</div>
+
+<ion-content>
+  <ion-title color="primary" class="login-title">
+    <span translate>Register</span>
+  </ion-title>
+  <div class="ion-padding form-container" fxLayout="column nowrap" fxLayoutAlign="space-between">
+    <form [formGroup]="registerForm" (ngSubmit)="signup()" class="element-list">
+      <div class="input-container">
+        <ion-label color="primary">
+          <span translate>Email</span>
+        </ion-label>
+        <ion-input
+          formControlName="email"
+          class="input-element"
+          placeholder="Enter your email"
+          type="email"
+          inputmode="email"></ion-input>
+      </div>
+
+      <div class="input-container">
+        <ion-label color="primary">
+          <span translate>Password</span>
+        </ion-label>
+        <ion-input
+          formControlName="password"
+          class="input-element"
+          placeholder="Enter your password"
+          type="password"
+          inputmode="text"
+        ></ion-input>
+      </div>
+      <div class="input-container">
+        <ion-label color="primary">
+          <span translate>Confirm password</span>
+        </ion-label>
+        <ion-input
+          formControlName="confirmPassword"
+          class="input-element"
+          placeholder="Confirm your password"
+          type="password"
+          inputmode="text"
+        ></ion-input>
+      </div>
+
+
+      <div class="button-container">
+        <ion-button [disabled]="registerForm.invalid" expand="block" type="submit" class="login-button" color="primary">
+          <span translate>Register</span>
+        </ion-button>
+      </div>
+    </form>
+    <div class="register-container">
+      <ion-text>
+        <span translate>Already have account ? </span>
+        <a [routerLink]="'/login'" class="register">
+          <span translate>login</span>
+        </a>
+      </ion-text>
+    </div>
+  </div>
+
+
+</ion-content>
