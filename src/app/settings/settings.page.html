@@ -17,7 +17,8 @@
         <ion-label>
           <span translate>Server Url</span>
         </ion-label>
-        <ion-text style="color: grey">{{serverUrl}}</ion-text>
+        <ion-text
+          style="color: grey;width: 33%">{{serverUrl.length > 15 ? serverUrl.substr(0, 13) + '...' : serverUrl}}</ion-text>
       </ion-item>
     </ion-list>
   </div>

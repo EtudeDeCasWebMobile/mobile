@@ -14,7 +14,7 @@ const {Modals, Toast} = Plugins;
 })
 export class SettingsPage implements OnInit, OnDestroy {
 
-  public serverUrl;
+  public serverUrl = '';
   public isAuthenticated: boolean;
 
   constructor(
