@@ -13,7 +13,7 @@
 <ion-content>
   <div class="ion-padding">
     <ion-list id="labels-list">
-      <ion-item button lines="full" (click)="changeServerUrl()">
+      <ion-item [fxHide]="isAuthenticated" button lines="full" (click)="changeServerUrl()">
         <ion-label>
           <span translate>Server Url</span>
         </ion-label>

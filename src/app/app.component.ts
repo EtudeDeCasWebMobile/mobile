@@ -68,8 +68,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public navigate(s: string) {
-    this.router.navigateByUrl(s);
     this.menuController.close();
+    this.router.navigateByUrl(s);
   }
 
   ngOnDestroy(): void {

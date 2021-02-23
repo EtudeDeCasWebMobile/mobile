@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {Storage} from '@ionic/storage';
 import {Plugins} from '@capacitor/core';
+import {AuthService} from '../services/auth.service';
 
 const {Modals, Toast} = Plugins;
 
@@ -14,14 +15,19 @@ const {Modals, Toast} = Plugins;
 export class SettingsPage implements OnInit, OnDestroy {
 
   public serverUrl;
+  public isAuthenticated: boolean;
 
   constructor(
     private readonly storage: Storage,
+    private readonly authService: AuthService,
   ) {
   }
 
   async ngOnInit() {
     this.serverUrl = await this.storage.get('server');
+    this.authService.isAuthenticated$().subscribe(res => {
+      this.isAuthenticated = res;
+    });
   }
 
   public async changeServerUrl() {
