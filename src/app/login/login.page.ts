@@ -2,6 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {CustomValidators} from 'ngx-custom-validators';
+import {Plugins} from '@capacitor/core';
+
+const {Modals} = Plugins;
 
 @Component({
   selector: 'app-login',
@@ -38,6 +41,14 @@ export class LoginPage implements OnInit {
 
   public login(): void {
     console.log(this.loginForm);
+  }
+
+  public async loginAsAnonymous() {
+    const {value} = await Modals.prompt({
+      title: 'Anonymous login',
+      message: 'Enter a token'
+    });
+    console.log(value);
   }
 
 }
