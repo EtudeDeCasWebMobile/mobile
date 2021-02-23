@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {from} from 'rxjs';
 import {Storage} from '@ionic/storage';
-import {AlertController} from '@ionic/angular';
+import {AlertController, MenuController} from '@ionic/angular';
 import {Plugins} from '@capacitor/core';
+import {Router} from '@angular/router';
 
 const {Modals} = Plugins;
 
@@ -15,7 +16,9 @@ export class AppComponent implements OnInit {
 
   constructor(
     private readonly storage: Storage,
-    private readonly alertController: AlertController
+    private readonly alertController: AlertController,
+    private readonly router: Router,
+    private readonly menuController: MenuController
   ) {
   }
 
@@ -42,6 +45,11 @@ export class AppComponent implements OnInit {
     }
     return promptRet;
 
+  }
+
+  public navigate(s: string) {
+    this.router.navigateByUrl(s);
+    this.menuController.close();
   }
 
 }

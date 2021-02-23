@@ -1,19 +1,24 @@
 <ion-app>
-  <ion-menu contentId="main-content" type="overlay">
+  <ion-menu contentId="main-content" type="overlay" auto-hide="true">
     <ion-header>
       <ion-toolbar color="primary">
-        <ion-title>Navigate</ion-title>
+        <ion-title>Menu</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <ion-list id="labels-list">
-        <ion-list-header>
-          <a [routerLink]="'auth/login'">Login</a>
-          Labels
-        </ion-list-header>
-        <ion-item *ngFor="let label of ['hello']" lines="none">
+        <ion-item button lines="full" (click)="navigate('/login')">
           <ion-icon slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
-          <ion-label>{{ label }}</ion-label>
+          <ion-label>
+            <span translate>Login</span>
+          </ion-label>
+        </ion-item>
+
+        <ion-item button lines="full" (click)="navigate('/signup')">
+          <ion-icon slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
+          <ion-label>
+            <span translate>Register</span>
+          </ion-label>
         </ion-item>
       </ion-list>
     </ion-content>
