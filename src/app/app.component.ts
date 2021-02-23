@@ -4,6 +4,7 @@ import {Storage} from '@ionic/storage';
 import {AlertController, MenuController} from '@ionic/angular';
 import {Plugins} from '@capacitor/core';
 import {Router} from '@angular/router';
+import {AuthService} from './services/auth.service';
 
 const {Modals} = Plugins;
 
@@ -18,7 +19,8 @@ export class AppComponent implements OnInit {
     private readonly storage: Storage,
     private readonly alertController: AlertController,
     private readonly router: Router,
-    private readonly menuController: MenuController
+    private readonly menuController: MenuController,
+    private readonly authService:AuthService
   ) {
   }
 
