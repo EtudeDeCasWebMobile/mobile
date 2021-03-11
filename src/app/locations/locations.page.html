@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <div fxLayout="columns" class="head-div">
+      <ion-title>Locations</ion-title>
+    <ion-tabs class="tabs" >
+      <ion-tab-bar class="tab-bar">
+        <ion-tab-button class="tab-button" tab="locations">
+          <ion-label>Locations</ion-label>
+        </ion-tab-button>
+    
+        <ion-tab-button class="tab-button" tab="collections">
+          <ion-label>Collections</ion-label>
+  
+        </ion-tab-button>
+    
+      </ion-tab-bar>
+    </ion-tabs>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+  <div class="list-container">
+      <div class="list-item" *ngFor="let location of locations" fxLayout="row" fxLayoutGap="1em">
+        <div class="item-img-container">
+          <img class="item-img" src="https://via.placeholder.com/150" alt="" width="100px" height="100px">
+        </div>
+
+        <div class="item-text-container" fxLayout="column" fxLayoutGap="1em">
+          <div class="item-title">
+            <span>
+
+              {{ location.title }}
+            </span>
+          </div>
+          <div class="item-description">
+          <span>
+
+            {{ location.description }}
+          </span>
+          </div>
+        </div>
+      </div>
+  </div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="secondary" (click)="addLocation()">
+      <ion-icon class="fab-add-icon" name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  
+  
+</ion-content>
