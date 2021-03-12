@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
+import {environment} from '../../environments';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import {map} from 'rxjs/operators';
 export class AuthService {
 
   constructor(
-    private readonly httpClient: HttpClient,
+    private readonly http: HttpClient,
     private readonly storage: Storage
   ) {
   }
@@ -21,7 +22,14 @@ export class AuthService {
   }
 
   public login(email: string, password: string) {
-    //this.httpClient.post()
+    return from(this.storage.get('server'))
+      .pipe(switchMap(url => {
+        console.log(url);
+        return this.http.post(`${environment.url}${url}/auth`, {
+          email,
+          password
+        });
+      }));
   }
 
 }

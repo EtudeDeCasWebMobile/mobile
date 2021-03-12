@@ -15,6 +15,9 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {JwtInterceptor} from './services/jwt.interceptor';
 import {JwtHelperService} from '@auth0/angular-jwt';
 
+import {LoadingBarModule} from '@ngx-loading-bar/core';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -26,6 +29,8 @@ import {JwtHelperService} from '@auth0/angular-jwt';
     LeafletModule,
     CustomFormsModule,
     HttpClientModule,
+    LoadingBarModule,
+    LoadingBarHttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production})
   ],
   providers: [

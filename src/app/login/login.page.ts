@@ -5,8 +5,13 @@ import {CustomValidators} from 'ngx-custom-validators';
 import {Plugins} from '@capacitor/core';
 import {Storage} from '@ionic/storage';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
+import {AuthService} from '../services/auth.service';
+import {catchError} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
+import {throwError} from 'rxjs';
+import {LoginResponseDtoInterface} from '../models/login-response-dto.interface';
 
-const {Modals} = Plugins;
+const {Modals, Toast} = Plugins;
 
 @AutoUnsubscribe()
 @Component({
@@ -21,7 +26,8 @@ export class LoginPage implements OnInit, OnDestroy {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
-    private readonly storage: Storage
+    private readonly storage: Storage,
+    private readonly authService: AuthService
   ) {
   }
 
@@ -44,6 +50,43 @@ export class LoginPage implements OnInit, OnDestroy {
   }
 
   public login(): void {
+    if (this.loginForm.valid) {
+      const values = this.loginForm.value;
+      this.authService.login(values.email, values.password)
+        .pipe(
+          catchError((err) => {
+            if (err instanceof HttpErrorResponse) {
+              if (err.status === 400) {
+                Toast.show({
+                  text: `Wrong email or password`,
+                  duration: 'long',
+                  position: 'bottom'
+                });
+              } else {
+                Toast.show({
+                  text: `An error occurred, try again`,
+                  duration: 'long',
+                  position: 'bottom'
+                });
+              }
+            }
+            return throwError(err);
+          })
+        )
+        .subscribe((res: LoginResponseDtoInterface) => {
+          Toast.show({
+            text: `Successfully logged`,
+            duration: 'long',
+            position: 'bottom'
+          });
+          // this.router.navigateByUrl(`/login`); //redirect to show locations pages
+        });
+    } else {
+      Toast.show({
+        position: 'bottom',
+        text: 'Invalid form'
+      });
+    }
     console.log(this.loginForm);
     this.storage.set('user', {authToken: 'bablablabal'});
   }
