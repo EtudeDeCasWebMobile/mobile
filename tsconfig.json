@@ -6,9 +6,12 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
+    "emitDecoratorMetadata": true,
     "downlevelIteration": true,
     "experimentalDecorators": true,
+    "allowJs": true,
     "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true ,
     "importHelpers": true,
     "target": "es2015",
     "module": "es2020",
@@ -21,3 +24,4 @@
     "strictTemplates": true
   }
 }
+

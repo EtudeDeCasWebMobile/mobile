@@ -1,18 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { from } from 'rxjs';
-import { CoordinateInterface } from '../models/coordinate.interface';
-import { LocationInterface } from '../models/location.interface';
+import { LocationInterface } from '../../../models/location.interface';
+
 @Component({
   selector: 'app-locations',
   templateUrl: './locations.page.html',
   styleUrls: ['./locations.page.scss'],
 })
-export class LocationsPage implements OnInit {
 
+export class LocationsPage implements OnInit {
   public locations: LocationInterface[]=[];
   constructor() { }
-
-
   ngOnInit() {
     this.locations = [
       {

@@ -20,8 +20,16 @@ const routes: Routes = [
     loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule)
   },
   {
-    path: 'locations',
-    loadChildren: () => import('./locations/locations.module').then( m => m.LocationsPageModule)
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+  },
+  {
+    path: 'home/locations',
+    loadChildren: () => import('./home/pages/locations/locations.module').then( m => m.LocationsPageModule)
+  },
+  {
+    path: 'home/collections',
+    loadChildren: () => import('./home/pages/collections/collections.module').then( m => m.CollectionsPageModule)
   }
 ];
 

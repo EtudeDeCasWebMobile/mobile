@@ -12,5 +12,6 @@
   "cordova": {},
   "server": {
     "cleartext": true
-  }
+  },
+  "linuxAndroidStudioPath": "/home/chemsou/Progs/android-studio-ide-201.7042882-linux/android-studio/bin/studio.sh"
 }
