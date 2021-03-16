@@ -11,6 +11,7 @@
   },
   "cordova": {},
   "server": {
-    "url": "http://10.245.212.23:8100"
-  }
+    "cleartext": true
+  },
+  "linuxAndroidStudioPath": "/home/chemsou/Progs/android-studio-ide-201.7042882-linux/android-studio/bin/studio.sh"
 }
