@@ -7,9 +7,10 @@ import {Storage} from '@ionic/storage';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {AuthService} from '../services/auth.service';
 import {catchError} from 'rxjs/operators';
-import {HttpErrorResponse} from '@angular/common/http';
+import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {throwError} from 'rxjs';
 import {LoginResponseDtoInterface} from '../models/login-response-dto.interface';
+import {JwtHelperService} from '@auth0/angular-jwt';
 
 const {Modals, Toast} = Plugins;
 
@@ -27,7 +28,8 @@ export class LoginPage implements OnInit, OnDestroy {
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly storage: Storage,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly jwtHelperService: JwtHelperService
   ) {
   }
 
@@ -73,13 +75,23 @@ export class LoginPage implements OnInit, OnDestroy {
             return throwError(err);
           })
         )
-        .subscribe((res: LoginResponseDtoInterface) => {
+        .subscribe((res: HttpResponse<LoginResponseDtoInterface>) => {
           Toast.show({
             text: `Successfully logged`,
             duration: 'long',
             position: 'bottom'
           });
-          // this.router.navigateByUrl(`/login`); //redirect to show locations pages
+          const body: LoginResponseDtoInterface = res.body;
+          const jwtToken = res.headers.get('authtoken');
+          const decodedToken = this.jwtHelperService.decodeToken(jwtToken);
+          console.log(body);
+          this.storage.set('user', {
+            authToken: jwtToken,
+            email: decodedToken.sub,
+            id: decodedToken.userId
+          });
+
+          this.router.navigateByUrl(`/home`); // redirect to show locations pages
         });
     } else {
       Toast.show({
@@ -87,8 +99,6 @@ export class LoginPage implements OnInit, OnDestroy {
         text: 'Invalid form'
       });
     }
-    console.log(this.loginForm);
-    this.storage.set('user', {authToken: 'bablablabal'});
   }
 
   public async loginAsAnonymous() {
