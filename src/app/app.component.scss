@@ -1,3 +1,18 @@
-a{
+a {
   text-decoration: none;
+}
+
+:host {
+  ion-content {
+    --ion-background-color: #3F3F49;
+  }
+
+  ion-item {
+    color: #ffffff;
+  }
+
+  .white-icon{
+    color: #ffffff;
+  }
+
 }

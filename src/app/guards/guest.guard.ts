@@ -2,12 +2,12 @@ import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Route, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
 import {Observable} from 'rxjs';
 import {AuthService} from '../services/auth.service';
-import {tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class GuestGuard implements CanActivate {
 
   constructor(
     private readonly authService: AuthService,
@@ -18,34 +18,40 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.authService.isAuthenticated$()
-      .pipe(tap(res => {
+      .pipe(map(res => {
+        console.log(res);
         if (!!res) {
-          console.log(res);
+          this.router.navigateByUrl('/home');
         } else {
-          this.router.navigateByUrl('/login');
+          console.log(res);
         }
+        return !res;
       }));
   }
 
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
     return this.authService.isAuthenticated$()
-      .pipe(tap(res => {
+      .pipe(map(res => {
+        console.log(res);
         if (!!res) {
-          console.log(res);
+          this.router.navigateByUrl('/home');
         } else {
-          this.router.navigateByUrl('/login');
+          console.log(res);
         }
+        return !res;
       }));
   }
 
   canLoad(route: Route): Observable<boolean> | boolean {
     return this.authService.isAuthenticated$()
-      .pipe(tap(res => {
+      .pipe(map(res => {
+        console.log(res);
         if (!!res) {
-          console.log(res);
+          this.router.navigateByUrl('/home');
         } else {
-          this.router.navigateByUrl('/login');
+          console.log(res);
         }
+        return !res;
       }));
   }
 

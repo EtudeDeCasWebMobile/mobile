@@ -18,6 +18,8 @@ const {Modals, Geolocation, Toast} = Plugins;
 })
 export class AppComponent implements OnInit, OnDestroy {
 
+  public isAuthenticated: boolean;
+
   constructor(
     private readonly storage: Storage,
     private readonly alertController: AlertController,
@@ -48,6 +50,10 @@ export class AppComponent implements OnInit, OnDestroy {
         console.log(res);
       });
 
+    this.authService.getIsAuthnticatedSubject().subscribe(res => {
+      console.log(res);
+      this.isAuthenticated = res;
+    });
 
   }
 
@@ -73,6 +79,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
   }
 
 }

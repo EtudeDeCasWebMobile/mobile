@@ -9,31 +9,38 @@
     </ion-header>
     <ion-content>
       <ion-list id="labels-list">
-        <ion-item button lines="full" (click)="navigate('/login')">
-          <ion-icon slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
+        <ion-item [fxHide]="isAuthenticated" button lines="full" (click)="navigate('/login')">
+          <ion-icon class="white-icon" slot="start" name="log-in-outline"></ion-icon>
           <ion-label>
             <span translate>Login</span>
           </ion-label>
         </ion-item>
 
-        <ion-item button lines="full" (click)="navigate('/signup')">
-          <ion-icon slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
+        <ion-item [fxHide]="isAuthenticated" button lines="full" (click)="navigate('/signup')">
+          <ion-icon class="white-icon" slot="start" name="person-add-outline"></ion-icon>
           <ion-label>
             <span translate>Register</span>
           </ion-label>
         </ion-item>
 
+        <ion-item [fxHide]="!(isAuthenticated)" button lines="full" (click)="navigate('/home')">
+          <ion-icon class="white-icon" slot="start" name="home-outline"></ion-icon>
+          <ion-label>
+            <span translate>Home</span>
+          </ion-label>
+        </ion-item>
+
         <ion-item button lines="full" (click)="navigate('/settings')">
-          <ion-icon slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
+          <ion-icon class="white-icon" slot="start" name="settings-outline"></ion-icon>
           <ion-label>
             <span translate>Settings</span>
           </ion-label>
         </ion-item>
 
-        <ion-item button lines="full" (click)="navigate('/home')">
-          <ion-icon slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
+        <ion-item [fxHide]="!(isAuthenticated)" button lines="full" (click)="logout()">
+          <ion-icon class="white-icon" slot="start" name="log-out-outline"></ion-icon>
           <ion-label>
-            <span translate>Home</span>
+            <span translate>Logout</span>
           </ion-label>
         </ion-item>
 

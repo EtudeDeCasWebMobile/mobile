@@ -4,6 +4,14 @@
       <ion-menu-toggle>
         <ion-icon class="menu-icon" name="menu-outline"></ion-icon>
       </ion-menu-toggle>
+      <ion-searchbar
+        type="text" slot="end" color="primary"
+        enterkeyhint="search" inputmode="search"
+        placeholder="Search a location or a collection"
+        [(ngModel)]="searchValue"
+        animated
+        (ionChange)="searchLocationOrCollection()"
+      ></ion-searchbar>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -14,12 +22,12 @@
     <ion-tab-bar slot="top" class="tabs" color="primary">
       <ion-tab-button tab="locations">
         <ion-title>
-          <span>Locations</span>
+          <span class="tab-title">Locations</span>
         </ion-title>
       </ion-tab-button>
       <ion-tab-button tab="collections">
         <ion-title>
-          <span>Collections</span>
+          <span class="tab-title">Collections</span>
         </ion-title>
       </ion-tab-button>
     </ion-tab-bar>

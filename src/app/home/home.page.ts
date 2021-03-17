@@ -6,11 +6,16 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
+  searchValue: string;
 
   constructor() {
   }
 
   ngOnInit() {
+  }
+
+  searchLocationOrCollection() {
+    console.log(this.searchValue);
   }
 
 }

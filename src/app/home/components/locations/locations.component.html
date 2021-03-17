@@ -1,30 +1,43 @@
 <div>
+
   <div class="list-container">
-    <div class="list-item" *ngFor="let location of locations" fxLayout="row" fxLayoutGap="1em">
-      <div class="item-img-container">
-        <img class="item-img" src="https://via.placeholder.com/150" alt="" width="100px" height="100px">
-      </div>
-
-      <div class="item-text-container" fxLayout="column" fxLayoutGap="1em">
-        <div class="item-title">
-          <span>
-
-            {{ location.title }}
-          </span>
-        </div>
-        <div class="item-description">
-        <span>
-
-          {{ location.description }}
-        </span>
-        </div>
-      </div>
+    <div *ngIf="!locations?.length"
+         style="z-index:9999;height: 90px;position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);width: 80%;text-align: center">
+      <ion-spinner color="primary" style="width: 90px;height: 90px;"></ion-spinner>
     </div>
-  </div>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-  <ion-fab-button color="secondary" (click)="addLocation()">
-    <ion-icon class="fab-add-icon" name="add"></ion-icon>
-  </ion-fab-button>
-  </ion-fab>
 
+    <ion-virtual-scroll [items]="locations" approxItemHeight="100px">
+      <div *virtualItem="let location;" class="list-item" fxLayout="row" fxLayoutGap="1em">
+        <div class="item-img-container">
+          <img class="item-img" src="https://via.placeholder.com/150" alt="" width="100px" height="100px">
+        </div>
+
+        <div class="item-text-container" fxLayout="column" fxLayoutGap="1em">
+          <div class="item-title">
+            <span>
+              {{ location.title }}
+            </span>
+          </div>
+          <div class="item-description">
+            <span>
+              {{ location.description }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </ion-virtual-scroll>
+
+    <div *ngIf="locations?.length===0"
+         style="position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);width: 80%;text-align: center">
+      <h3>No Location have been created</h3>
+    </div>
+
+  </div>
+
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="secondary" (click)="addLocation()">
+      <ion-icon class="fab-add-icon" name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </div>

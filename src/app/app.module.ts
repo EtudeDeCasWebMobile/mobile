@@ -17,6 +17,7 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 
 import {LoadingBarModule} from '@ngx-loading-bar/core';
 import {LoadingBarHttpClientModule} from '@ngx-loading-bar/http-client';
+import {SharedModule} from './shared/shared.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,6 +28,7 @@ import {LoadingBarHttpClientModule} from '@ngx-loading-bar/http-client';
     IonicStorageModule.forRoot(),
     AppRoutingModule,
     LeafletModule,
+    SharedModule,
     CustomFormsModule,
     HttpClientModule,
     LoadingBarModule,

@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
-import {from, Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {from, Observable, Subject} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../environments';
 import {Toast} from '@capacitor/core';
 import {JwtHelperService} from '@auth0/angular-jwt';
@@ -11,6 +11,8 @@ import {JwtHelperService} from '@auth0/angular-jwt';
   providedIn: 'root'
 })
 export class AuthService {
+
+  private isAuthenticatedSubject = new Subject<boolean>();
 
   constructor(
     private readonly http: HttpClient,
@@ -22,8 +24,13 @@ export class AuthService {
   public isAuthenticated$(): Observable<boolean> {
     return from(this.storage.get('user'))
       .pipe(map(user => {
+        this.isAuthenticatedSubject.next(!!(!!user && !!user.authToken && !this.jwtHelperService.isTokenExpired(user.authToken)));
         return !!(!!user && !!user.authToken && !this.jwtHelperService.isTokenExpired(user.authToken));
       }));
+  }
+
+  public getIsAuthnticatedSubject(): Subject<boolean> {
+    return this.isAuthenticatedSubject;
   }
 
   public login(email: string, password: string) {
@@ -34,12 +41,16 @@ export class AuthService {
             email,
             password
           }, {observe: 'response'});
+        }),
+        tap(res => {
+          this.isAuthenticatedSubject.next(true);
         })
       );
   }
 
   public logout() {
     this.storage.remove('user');
+    this.isAuthenticatedSubject.next(false);
     Toast.show({
       text: 'Successfully disconnected',
       position: 'bottom',
