@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-collections',
@@ -6,9 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./collections.component.scss'],
 })
 export class CollectionsComponent implements OnInit {
-  constructor() { }
 
-  ngOnInit() {}
+  constructor() {
+  }
 
+  ngOnInit() {
+  }
 
 }

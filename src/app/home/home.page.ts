@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { LocationInterface } from '../models/location.interface';
-
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-home',
@@ -8,9 +6,9 @@ import { LocationInterface } from '../models/location.interface';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }

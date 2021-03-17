@@ -6,7 +6,6 @@ import {map, switchMap} from 'rxjs/operators';
 import {environment} from '../../environments';
 import {Toast} from '@capacitor/core';
 import {JwtHelperService} from '@auth0/angular-jwt';
-import {LoginResponseDtoInterface} from '../models/login-response-dto.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +21,9 @@ export class AuthService {
 
   public isAuthenticated$(): Observable<boolean> {
     return from(this.storage.get('user'))
-      .pipe(map(user => !!(!!user && !!user.authToken && this.jwtHelperService.isTokenExpired(user.authToken))));
+      .pipe(map(user => {
+        return !!(!!user && !!user.authToken && !this.jwtHelperService.isTokenExpired(user.authToken));
+      }));
   }
 
   public login(email: string, password: string) {

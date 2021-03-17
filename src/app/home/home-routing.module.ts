@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { SharedModule } from '../shared/shared.module'
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 
-import { HomePage } from './home.page';
-import { from } from 'rxjs';
+import {HomePage} from './home.page';
+import {LocationsComponent} from './components/locations/locations.component';
+import {CollectionsComponent} from './components/collections/collections.component';
 
 const routes: Routes = [
   {
@@ -12,23 +12,18 @@ const routes: Routes = [
     children: [
       {
         path: 'locations',
-        loadChildren: () => import('./pages/locations/locations.module').then(m => m.LocationsPageModule)
-      },
-      {
+        component: LocationsComponent
+      }, {
         path: 'collections',
-        loadChildren: () => import('./pages/collections/collections.module').then(m => m.CollectionsPageModule)
+        component: CollectionsComponent
       }
-    ]
-  },
-  {
-    path: "",
-    redirectTo: "locations",
-    pathMatch: "full"
+    ],
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), SharedModule],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class HomePageRoutingModule {}
+export class HomePageRoutingModule {
+}

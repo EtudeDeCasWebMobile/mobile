@@ -1,20 +1,22 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {NgModule} from '@angular/core';
 
-import { IonicModule } from '@ionic/angular';
+import {HomePageRoutingModule} from './home-routing.module';
 
-import { HomePageRoutingModule } from './home-routing.module';
-
-import { HomePage } from './home.page';
+import {HomePage} from './home.page';
+import {SharedModule} from '../shared/shared.module';
+import {CollectionsComponent} from './components/collections/collections.component';
+import {LocationsComponent} from './components/locations/locations.component';
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
+    SharedModule,
     HomePageRoutingModule
   ],
-  declarations: [HomePage]
+  declarations: [
+    HomePage,
+    CollectionsComponent,
+    LocationsComponent
+  ]
 })
-export class HomePageModule {}
+export class HomePageModule {
+}
