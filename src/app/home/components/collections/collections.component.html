@@ -1,5 +1,41 @@
-<ion-content>
-  <div>
-    jkgjkgkj
+<div>
+
+  <div class="list-container">
+    <div *ngIf="!collections?.length"
+         style="z-index:9999;height: 90px;position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);width: 80%;text-align: center">
+      <ion-spinner color="primary" style="width: 90px;height: 90px;"></ion-spinner>
+    </div>
+
+    <ion-virtual-scroll [items]="collections" approxItemHeight="50px" style="height: 100vh">
+      <div *virtualItem="let collection;" class="list-item" fxLayout="row" fxLayoutAlign="start center"
+           fxLayoutGap="1em">
+        <div class="item-img-container">
+          <ion-icon name="bookmark" class="tag-icon"></ion-icon>
+        </div>
+        <div class="item-title">
+            <span>
+              {{ collection.tag }}
+            </span>
+        </div>
+        <div fxLayout="row" fxLayoutGap="2px" class="container--location-icons">
+          <span style="font-size: 18px">{{collection.locations.length}}</span>
+          <ion-icon name="location-outline" style="font-size: 21px"></ion-icon>
+        </div>
+
+      </div>
+    </ion-virtual-scroll>
+
+    <div *ngIf="collections?.length===0"
+         style="position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);width: 80%;text-align: center">
+      <h3>No collection have been created</h3>
+    </div>
+
   </div>
-</ion-content>
+
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="secondary" (click)="addCollection()">
+      <ion-icon class="fab-add-icon" name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</div>

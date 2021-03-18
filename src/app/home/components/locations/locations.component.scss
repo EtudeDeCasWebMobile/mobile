@@ -23,6 +23,7 @@
   color: white;
   border-radius: 7px;
   box-shadow: 1px 1px 0px 0px black;
+  object-fit: cover;
 }
 
 .item-img {
@@ -39,7 +40,7 @@
 
 .item-img-container {
   margin: 5px;
-  width: 25%;
+  width: calc(30% - 5px);
 }
 
 .item-text-container {
