@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CollectionInterface} from '../../../models/collection.interface';
+import {CollectionsService} from '../../../services/collections.service';
 
 @Component({
   selector: 'app-collections',
@@ -9,8 +10,21 @@ import {CollectionInterface} from '../../../models/collection.interface';
 export class CollectionsComponent implements OnInit {
 
   public collections: CollectionInterface[] = [];
+  public isFilterShown = false;
+  public filters = [{
+    title: 'Owned collections',
+    checked: true
+  }, {
+    title: 'Shared collections',
+    checked: true
+  }];
 
-  constructor() {
+  constructor(
+    private readonly collectionsService: CollectionsService
+  ) {
+    this.collectionsService.showHideFilter.subscribe(res => {
+      this.isFilterShown = res;
+    });
   }
 
   ngOnInit() {

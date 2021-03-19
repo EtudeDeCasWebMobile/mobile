@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  url: 'https://cors-anywhere.herokuapp.com/'
+  // url: 'https://cors-anywhere.herokuapp.com/'
+  url: ''
 };
 
 /*

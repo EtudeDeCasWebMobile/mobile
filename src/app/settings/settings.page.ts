@@ -38,7 +38,10 @@ export class SettingsPage implements OnInit, OnDestroy {
       okButtonTitle: 'save'
     });
 
-    if (!!value?.match(`[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)`) ||
+    this.serverUrl = value;
+    this.storage.set('server', this.serverUrl);
+
+/*    if (!!value?.match(`[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)`) ||
       !!value?.match(`^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$`)) {
       this.serverUrl = value;
       this.storage.set('server', this.serverUrl);
@@ -48,7 +51,7 @@ export class SettingsPage implements OnInit, OnDestroy {
         duration: 'long',
         position: 'bottom'
       });
-    }
+    }*/
 
 
   }

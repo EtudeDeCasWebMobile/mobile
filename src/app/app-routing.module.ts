@@ -21,7 +21,11 @@ const routes: Routes = [
     path: '**',
     redirectTo: 'login',
     pathMatch: 'full'
+  },  {
+    path: 'add-location',
+    loadChildren: () => import('./add-location/add-location.module').then( m => m.AddLocationPageModule)
   },
+
 ];
 
 @NgModule({

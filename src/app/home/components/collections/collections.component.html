@@ -1,4 +1,13 @@
-<div>
+<div style="position: relative">
+  <div class="filter-container" fxLayoutGap="1em" fxLayoutAlign="center center" fxLayout="row" [fxShow]="isFilterShown">
+
+
+    <div *ngFor="let filter of filters" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+      <ion-checkbox slot="start" color="secondary" [(ngModel)]="filter.checked"></ion-checkbox>
+      <ion-label (click)="filter.checked=!filter.checked" style="color:white">{{filter.title}}</ion-label>
+    </div>
+
+  </div>
 
   <div class="list-container">
     <div *ngIf="!collections?.length"
@@ -6,7 +15,7 @@
       <ion-spinner color="primary" style="width: 90px;height: 90px;"></ion-spinner>
     </div>
 
-    <ion-virtual-scroll [items]="collections" approxItemHeight="50px" style="height: 100vh">
+    <ion-virtual-scroll [items]="collections" approxItemHeight="60px">
       <div *virtualItem="let collection;" class="list-item" fxLayout="row" fxLayoutAlign="start center"
            fxLayoutGap="1em">
         <div class="item-img-container">

@@ -6,6 +6,10 @@
   --ion-item-background: #000000;
   --ion-card-background: #1c1c1d;
 
+  .filter-btn {
+    --box-shadow: unset;
+  }
+
   .header-md::after {
     background-image: unset !important;
   }
@@ -53,4 +57,10 @@
 
 .tab-title {
   font-size: 15px;
+}
+
+
+.disable-button{
+  user-select: none;
+  pointer-events: none;
 }

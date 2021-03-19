@@ -82,9 +82,12 @@ export class LoginPage implements OnInit, OnDestroy {
             position: 'bottom'
           });
           const body: LoginResponseDtoInterface = res.body;
-          const jwtToken = res.headers.get('authtoken');
+          const jwtToken = res.headers.get('AuthToken');
           const decodedToken = this.jwtHelperService.decodeToken(jwtToken);
+          console.log(res.headers);
+          console.log(jwtToken);
           console.log(body);
+          console.log(decodedToken);
           this.storage.set('user', {
             authToken: jwtToken,
             email: decodedToken.sub,

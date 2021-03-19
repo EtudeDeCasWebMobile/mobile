@@ -20,16 +20,23 @@
 <ion-content class="content ion-padding">
   <ion-tabs>
     <ion-tab-bar slot="top" class="tabs" color="primary">
-      <ion-tab-button tab="locations">
+
+      <ion-tab-button tab="locations" (click)="isCollection=false;isLocation=true">
         <ion-title>
           <span class="tab-title">Locations</span>
         </ion-title>
       </ion-tab-button>
-      <ion-tab-button tab="collections">
+
+      <ion-tab-button tab="collections" (click)="isCollection=true;isLocation=false">
         <ion-title>
           <span class="tab-title">Collections</span>
         </ion-title>
       </ion-tab-button>
+
+      <ion-button class="filter-btn" [ngClass]="{'disable-button':!isCollection}" (click)="showFilter()">
+        <ion-icon [fxShow]="isCollection"  name="options-outline"></ion-icon>
+      </ion-button>
+
     </ion-tab-bar>
   </ion-tabs>
 </ion-content>
