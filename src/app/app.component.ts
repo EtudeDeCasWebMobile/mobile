@@ -51,7 +51,6 @@ export class AppComponent implements OnInit, OnDestroy {
       });
 
     this.authService.getIsAuthnticatedSubject().subscribe(res => {
-      console.log(res);
       this.isAuthenticated = res;
     });
 
@@ -65,10 +64,10 @@ export class AppComponent implements OnInit, OnDestroy {
       okButtonTitle: 'Save',
       message: `Add a server URL/IP address`
     });
-/*    if (!(!!promptRet?.value?.match(`[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)`) ||
-      !!promptRet?.value?.match(`^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$`))) {
-      promptRet = await this.showPrompt();
-    }*/
+    /*    if (!(!!promptRet?.value?.match(`[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)`) ||
+          !!promptRet?.value?.match(`^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$`))) {
+          promptRet = await this.showPrompt();
+        }*/
     return promptRet;
 
   }

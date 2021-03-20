@@ -29,6 +29,8 @@ export class CollectionsComponent implements OnInit {
 
   ngOnInit() {
 
+    this.collectionsService.getAllOwnedCollection().subscribe(console.log);
+
     this.collections = [
       {
         id: 1,
