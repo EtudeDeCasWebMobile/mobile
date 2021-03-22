@@ -4,54 +4,56 @@
   <ion-menu contentId="main-content" type="overlay" auto-hide="true">
     <ion-header>
       <ion-toolbar color="primary">
-        <ion-title>Menu</ion-title>
+        <ion-title *ngIf="!isAuthenticated">Menu</ion-title>
+        <div *ngIf="isAuthenticated && !!user" style="padding:7px" fxLayout="row" fxLayoutAlign="start center"
+             fxLayoutGap="1em">
+          <img style="border-radius: 50%" width="80px" height="80px" src="/assets/images/profile-placeholder.png"
+               alt="user-photo">
+          <ion-text style="overflow: hidden;text-overflow: ellipsis;">
+            <span>{{user.email}}</span>
+          </ion-text>
+        </div>
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <ion-list id="labels-list">
-        <ion-item [fxHide]="isAuthenticated" button lines="full" (click)="navigate('/login')">
-          <ion-icon class="white-icon" slot="start" name="log-in-outline"></ion-icon>
-          <ion-label>
-            <span translate>Login</span>
-          </ion-label>
-        </ion-item>
+      <div class="labels-list" fxlayout="column nowrap" fxLayoutAlign="space-between stretch">
+        <div fxLayout="column">
+          <ion-item [fxHide]="isAuthenticated" button lines="full" (click)="navigate('/login')">
+            <ion-icon class="white-icon" slot="start" name="log-in-outline"></ion-icon>
+            <ion-label>
+              <span translate>Login</span>
+            </ion-label>
+          </ion-item>
+          <ion-item [fxHide]="isAuthenticated" button lines="full" (click)="navigate('/signup')">
+            <ion-icon class="white-icon" slot="start" name="person-add-outline"></ion-icon>
+            <ion-label>
+              <span translate>Register</span>
+            </ion-label>
+          </ion-item>
+          <ion-item [fxHide]="!(isAuthenticated)" button lines="full" (click)="navigate('/home')">
+            <ion-icon class="white-icon" slot="start" name="home-outline"></ion-icon>
+            <ion-label>
+              <span translate>Home</span>
+            </ion-label>
+          </ion-item>
+          <ion-item button lines="full" (click)="navigate('/settings')">
+            <ion-icon class="white-icon" slot="start" name="settings-outline"></ion-icon>
+            <ion-label>
+              <span translate>Settings</span>
+            </ion-label>
+          </ion-item>
+        </div>
 
-        <ion-item [fxHide]="isAuthenticated" button lines="full" (click)="navigate('/signup')">
-          <ion-icon class="white-icon" slot="start" name="person-add-outline"></ion-icon>
-          <ion-label>
-            <span translate>Register</span>
-          </ion-label>
-        </ion-item>
+        <div fxLayout="column">
+          <ion-item [fxHide]="!(isAuthenticated)" button lines="full" (click)="logout()">
+            <ion-icon color="secondary" class="white-icon" slot="start" name="log-out-outline"></ion-icon>
+            <ion-label>
+              <span translate>Logout</span>
+            </ion-label>
+          </ion-item>
+        </div>
 
-        <ion-item [fxHide]="!(isAuthenticated)" button lines="full" (click)="navigate('/edit-profile')">
-          <ion-icon class="white-icon" slot="start" name="home-outline"></ion-icon>
-          <ion-label>
-            <span translate>Profile</span>
-          </ion-label>
-        </ion-item>
-
-        <ion-item [fxHide]="!(isAuthenticated)" button lines="full" (click)="navigate('/home')">
-          <ion-icon class="white-icon" slot="start" name="home-outline"></ion-icon>
-          <ion-label>
-            <span translate>Home</span>
-          </ion-label>
-        </ion-item>
-
-        <ion-item button lines="full" (click)="navigate('/settings')">
-          <ion-icon class="white-icon" slot="start" name="settings-outline"></ion-icon>
-          <ion-label>
-            <span translate>Settings</span>
-          </ion-label>
-        </ion-item>
-
-        <ion-item [fxHide]="!(isAuthenticated)" button lines="full" (click)="logout()">
-          <ion-icon class="white-icon" slot="start" name="log-out-outline"></ion-icon>
-          <ion-label>
-            <span translate>Logout</span>
-          </ion-label>
-        </ion-item>
-
-      </ion-list>
+      </div>
     </ion-content>
   </ion-menu>
   <ion-router-outlet id="main-content"></ion-router-outlet>

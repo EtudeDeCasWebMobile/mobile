@@ -36,6 +36,10 @@ export class AuthService {
     return this.isAuthenticatedSubject;
   }
 
+  public getCurrentUser(): Observable<{ authToken: string, email: string, id: number }> {
+    return from(this.storage.get('user'));
+  }
+
   public login(email: string, password: string) {
     return from(this.storage.get('server'))
       .pipe(

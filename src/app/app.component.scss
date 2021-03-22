@@ -11,8 +11,14 @@ a {
     color: #ffffff;
   }
 
-  .white-icon{
+  .white-icon {
     color: #ffffff;
   }
 
+}
+
+.labels-list {
+  height: 100%;
+  flex-direction: column!important;
+  padding: 7px;
 }
