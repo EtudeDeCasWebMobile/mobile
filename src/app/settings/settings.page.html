@@ -12,7 +12,7 @@
 
 <ion-content>
   <div class="ion-padding">
-    <ion-list >
+    <div fxLayout="column" fxLayoutAlign="start stretch">
       <ion-item [fxHide]="isAuthenticated" button lines="full" (click)="changeServerUrl()" class="labels-list">
         <ion-label>
           <span translate>Server Url</span>
@@ -21,6 +21,13 @@
           {{serverUrl.length > 15 ? serverUrl.substr(0, 13) + '...' : serverUrl}}
         </ion-text>
       </ion-item>
-    </ion-list>
+      <ion-item [fxHide]="!isAuthenticated" button lines="full" class="labels-list">
+        <ion-label>
+          <span translate>Share my position</span>
+        </ion-label>
+        <ion-toggle color="secondary" (ionChange)="togglePosition($event)"></ion-toggle>
+
+      </ion-item>
+    </div>
   </div>
 </ion-content>

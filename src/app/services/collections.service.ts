@@ -11,6 +11,7 @@ import {environment} from '../../environments';
 export class CollectionsService {
 
   public showHideFilter = new Subject<boolean>();
+  public search = new Subject<string>();
 
   constructor(
     private readonly httpClient: HttpClient,

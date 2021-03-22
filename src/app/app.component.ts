@@ -1,12 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {from, interval} from 'rxjs';
+import {from, interval, of} from 'rxjs';
 import {Storage} from '@ionic/storage';
 import {AlertController, MenuController} from '@ionic/angular';
 import {Plugins} from '@capacitor/core';
 import {Router} from '@angular/router';
 import {AuthService} from './services/auth.service';
-import {skipWhile, switchMap} from 'rxjs/operators';
+import {distinctUntilChanged, switchMap} from 'rxjs/operators';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
+import {JwtHelperService} from '@auth0/angular-jwt';
 
 const {Modals, Geolocation, Toast} = Plugins;
 
@@ -26,7 +27,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly alertController: AlertController,
     private readonly router: Router,
     private readonly menuController: MenuController,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly jwtHelperService: JwtHelperService
   ) {
   }
 
@@ -41,14 +43,26 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       });
 
-    interval(5000)
+    interval(1000)
       .pipe(
-        switchMap(res => this.authService.isAuthenticated$()),
-        skipWhile(res => !res),
-        switchMap(res => from(Geolocation.getCurrentPosition({enableHighAccuracy: true})))
+        switchMap(res => this.authService.getCurrentUser()),
+        switchMap(res => {
+          if (!!res && !this.jwtHelperService.isTokenExpired(res.authToken) && res.sharePosition) {
+            return from(Geolocation.getCurrentPosition({enableHighAccuracy: true}));
+          }
+          return of(null);
+        }),
+        distinctUntilChanged(),
+        switchMap(res => {
+          if (!!res) {
+            console.log('coords = ', res);
+            // call api
+          }
+          return of(res);
+        })
       )
       .subscribe(res => {
-        console.log(res);
+        console.log('api call results = ', res);
       });
 
     this.authService.getIsAuthnticatedSubject()
@@ -65,7 +79,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async showPrompt() {
 
-    let promptRet = await Modals.prompt({
+    const promptRet = await Modals.prompt({
       title: 'Add a server',
       inputPlaceholder: 'www.server.com',
       okButtonTitle: 'Save',
@@ -88,6 +102,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logout() {
+    this.menuController.close();
     this.authService.logout();
     this.router.navigateByUrl('/login');
   }

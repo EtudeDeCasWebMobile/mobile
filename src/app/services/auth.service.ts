@@ -36,7 +36,7 @@ export class AuthService {
     return this.isAuthenticatedSubject;
   }
 
-  public getCurrentUser(): Observable<{ authToken: string, email: string, id: number }> {
+  public getCurrentUser(): Observable<{ authToken: string, email: string, id: number, sharePosition: boolean } | null> {
     return from(this.storage.get('user'));
   }
 

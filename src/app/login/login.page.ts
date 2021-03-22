@@ -84,14 +84,12 @@ export class LoginPage implements OnInit, OnDestroy {
           const body: LoginResponseDtoInterface = res.body;
           const jwtToken = res.headers.get('AuthToken');
           const decodedToken = this.jwtHelperService.decodeToken(jwtToken);
-          console.log(res.headers);
-          console.log(jwtToken);
           console.log(body);
-          console.log(decodedToken);
           this.storage.set('user', {
             authToken: jwtToken,
             email: decodedToken.sub,
-            id: decodedToken.userId
+            id: decodedToken.userId,
+            sharePosition: false
           });
 
           this.router.navigateByUrl(`/home`); // redirect to show locations pages

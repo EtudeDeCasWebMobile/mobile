@@ -11,6 +11,7 @@
         [(ngModel)]="searchValue"
         animated
         (ionChange)="searchLocationOrCollection()"
+        (ionBlur)="searchLocationOrCollection()"
       ></ion-searchbar>
     </div>
   </ion-toolbar>

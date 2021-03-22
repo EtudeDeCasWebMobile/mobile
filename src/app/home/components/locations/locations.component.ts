@@ -1,5 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {LocationInterface} from '../../../models/location.interface';
+import {LocationsService} from '../../../services/locations.service';
+// @ts-ignore
+import FuzzySearch from 'fuzzy-search';
+
 
 @Component({
   selector: 'app-locations',
@@ -9,8 +13,11 @@ import {LocationInterface} from '../../../models/location.interface';
 
 export class LocationsComponent implements OnInit {
   public locations: LocationInterface[] = [];
+  public originalLocations: LocationInterface[] = [];
 
-  constructor() {
+  constructor(
+    private readonly locationsService: LocationsService
+  ) {
   }
 
   ngOnInit() {
@@ -52,6 +59,11 @@ export class LocationsComponent implements OnInit {
         tags: ['']
       }
     ];
+    this.originalLocations = this.locations;
+
+    this.locationsService.search.subscribe(res => {
+      this.search(res);
+    });
   }
 
   /**
@@ -62,4 +74,14 @@ export class LocationsComponent implements OnInit {
 
   }
 
+  private search(res: string) {
+    console.log(res);
+    this.locations = this.originalLocations;
+    const searcher = new FuzzySearch(this.originalLocations, ['title', 'tags']);
+    this.locations = searcher.search(res);
+  }
+
+  onImgError($event) {
+    $event.target.src = '/assets/images/no-image.webp';
+  }
 }

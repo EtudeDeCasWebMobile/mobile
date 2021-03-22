@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {CollectionInterface} from '../../../models/collection.interface';
 import {CollectionsService} from '../../../services/collections.service';
+// @ts-ignore
+import FuzzySearch from 'fuzzy-search';
 
 @Component({
   selector: 'app-collections',
@@ -10,7 +12,9 @@ import {CollectionsService} from '../../../services/collections.service';
 export class CollectionsComponent implements OnInit {
 
   public collections: CollectionInterface[];
+  public originalCollections: CollectionInterface[];
   public sharedCollections: CollectionInterface[];
+  public originalSharedCollections: CollectionInterface[];
   public isFilterShown = false;
   public filters = [{
     title: 'Owned collections',
@@ -31,11 +35,16 @@ export class CollectionsComponent implements OnInit {
   ngOnInit() {
 
     this.sharedCollections = []; // wait for api implementation
+    this.originalSharedCollections = []; // wait for api implementation
     this.collectionsService
       .getAllOwnedCollection()
       .subscribe((res: { collections: CollectionInterface[] }) => {
         this.collections = res.collections;
+        this.originalCollections = res.collections;
       });
+    this.collectionsService.search.subscribe(res => {
+      this.search(res);
+    });
 
 
   }
@@ -45,6 +54,16 @@ export class CollectionsComponent implements OnInit {
    */
   public addCollection() {
     console.log('adding collection');
+  }
+
+  private search(res: string) {
+    console.log(res)
+    this.collections = this.originalCollections;
+    this.sharedCollections = this.originalSharedCollections;
+    const searcher = new FuzzySearch(this.originalCollections, ['locations.title', 'tag']);
+    const searcherShared = new FuzzySearch(this.originalSharedCollections, ['locations.title', 'tag']);
+    this.collections = searcher.search(res);
+    this.sharedCollections = searcherShared.search(res);
   }
 
 }

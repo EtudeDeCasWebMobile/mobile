@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {CollectionsService} from '../services/collections.service';
+import {LocationsService} from '../services/locations.service';
 
 @Component({
   selector: 'app-home',
@@ -16,12 +17,16 @@ export class HomePage implements OnInit {
 
   constructor(
     private readonly router: Router,
-    private readonly collectionsService: CollectionsService
+    private readonly collectionsService: CollectionsService,
+    private readonly locationsService: LocationsService
   ) {
 
     if (router.url.trim().includes('/home/collections')) {
       this.isCollection = true;
       this.isLocation = false;
+    } else if (router.url.trim().includes('/home/locations')) {
+      this.isCollection = false;
+      this.isLocation = true;
     }
   }
 
@@ -29,7 +34,11 @@ export class HomePage implements OnInit {
   }
 
   searchLocationOrCollection() {
-    console.log(this.searchValue);
+    if (this.isCollection) {
+      this.collectionsService.search.next(this.searchValue);
+    } else if (this.isLocation) {
+      this.locationsService.search.next(this.searchValue);
+    }
   }
 
   public showFilter() {
