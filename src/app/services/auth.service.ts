@@ -6,6 +6,7 @@ import {map, switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../environments';
 import {Toast} from '@capacitor/core';
 import {JwtHelperService} from '@auth0/angular-jwt';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class AuthService {
   constructor(
     private readonly http: HttpClient,
     private readonly storage: Storage,
-    private readonly jwtHelperService: JwtHelperService
+    private readonly jwtHelperService: JwtHelperService,
+    private readonly router: Router
   ) {
   }
 
@@ -25,7 +27,13 @@ export class AuthService {
     return from(this.storage.get('user'))
       .pipe(map(user => {
         if (!!user && !!user.authToken && this.jwtHelperService.isTokenExpired(user.authToken)) {
-          this.logout();
+          this.logout(false);
+          Toast.show({
+            text: 'Session expired',
+            position: 'bottom',
+            duration: 'long'
+          });
+          this.router.navigateByUrl(`/login`);
         }
         this.isAuthenticatedSubject.next(!!(!!user && !!user.authToken && !this.jwtHelperService.isTokenExpired(user.authToken)));
         return !!(!!user && !!user.authToken && !this.jwtHelperService.isTokenExpired(user.authToken));
@@ -55,14 +63,16 @@ export class AuthService {
       );
   }
 
-  public logout() {
+  public logout(show = true) {
     this.storage.remove('user');
     this.isAuthenticatedSubject.next(false);
-    Toast.show({
-      text: 'Successfully disconnected',
-      position: 'bottom',
-      duration: 'long'
-    });
+    if (show) {
+      Toast.show({
+        text: 'Successfully disconnected',
+        position: 'bottom',
+        duration: 'long'
+      });
+    }
   }
 
 }

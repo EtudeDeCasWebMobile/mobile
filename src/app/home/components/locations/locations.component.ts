@@ -93,4 +93,11 @@ export class LocationsComponent implements OnInit {
   onImgError($event) {
     $event.target.src = '/assets/images/no-image.webp';
   }
+
+  pullToRefresh($event: any) {
+    //this.locations=[];
+    $event.target.complete();
+
+  }
+
 }

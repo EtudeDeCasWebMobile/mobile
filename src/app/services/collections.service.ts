@@ -28,4 +28,15 @@ export class CollectionsService {
       );
   }
 
+  public createCollection(tag: string) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          return this.httpClient.post(`${environment.url}${url}/me/collections`, {
+            tag
+          });
+        })
+      );
+  }
+
 }

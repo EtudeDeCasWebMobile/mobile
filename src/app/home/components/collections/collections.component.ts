@@ -3,6 +3,7 @@ import {CollectionInterface} from '../../../models/collection.interface';
 import {CollectionsService} from '../../../services/collections.service';
 // @ts-ignore
 import FuzzySearch from 'fuzzy-search';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-collections',
@@ -25,7 +26,8 @@ export class CollectionsComponent implements OnInit {
   }];
 
   constructor(
-    private readonly collectionsService: CollectionsService
+    private readonly collectionsService: CollectionsService,
+    private readonly router: Router
   ) {
     this.collectionsService.showHideFilter.subscribe(res => {
       this.isFilterShown = res;
@@ -46,7 +48,6 @@ export class CollectionsComponent implements OnInit {
       this.search(res);
     });
 
-
   }
 
   /**
@@ -54,16 +55,27 @@ export class CollectionsComponent implements OnInit {
    */
   public addCollection() {
     console.log('adding collection');
+    this.router.navigateByUrl(`/add-collection`);
   }
 
   private search(res: string) {
-    console.log(res)
+    console.log(res);
     this.collections = this.originalCollections;
     this.sharedCollections = this.originalSharedCollections;
     const searcher = new FuzzySearch(this.originalCollections, ['locations.title', 'tag']);
     const searcherShared = new FuzzySearch(this.originalSharedCollections, ['locations.title', 'tag']);
     this.collections = searcher.search(res);
     this.sharedCollections = searcherShared.search(res);
+  }
+
+  pullToRefresh($event: any) {
+    this.collectionsService
+      .getAllOwnedCollection()
+      .subscribe((res: { collections: CollectionInterface[] }) => {
+        this.collections = res.collections;
+        this.originalCollections = res.collections;
+        $event.target.complete();
+      });
   }
 
 }

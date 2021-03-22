@@ -34,6 +34,20 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
 
+    this.authService.isAuthenticated$().subscribe(res => {
+      this.isAuthenticated = res;
+    });
+
+    this.authService.getIsAuthnticatedSubject()
+      .subscribe(res => {
+        this.isAuthenticated = res;
+        if (this.isAuthenticated) {
+          this.authService.getCurrentUser().subscribe(user => {
+            this.user = user;
+          });
+        }
+      });
+
     from(this.storage.get('server'))
       .subscribe(async (result) => {
         if (!result) {
@@ -63,16 +77,6 @@ export class AppComponent implements OnInit, OnDestroy {
       )
       .subscribe(res => {
         console.log('api call results = ', res);
-      });
-
-    this.authService.getIsAuthnticatedSubject()
-      .subscribe(res => {
-        this.isAuthenticated = res;
-        if (this.isAuthenticated) {
-          this.authService.getCurrentUser().subscribe(user => {
-            this.user = user;
-          });
-        }
       });
 
   }

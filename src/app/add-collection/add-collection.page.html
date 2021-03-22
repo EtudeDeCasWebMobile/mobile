@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <span translate>New collection</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container__actions" fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="1em">
+
+    <ion-button class="btn" expand="block" (click)="createCollection()">Create</ion-button>
+
+    <ion-button class="btn" expand="block">Import</ion-button>
+
+    <ion-button class="btn" expand="block">Add url</ion-button>
+
+  </div>
+</ion-content>
+

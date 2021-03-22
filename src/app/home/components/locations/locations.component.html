@@ -1,6 +1,10 @@
 <div>
 
   <div class="list-container">
+    <ion-refresher slot="fixed" (ionRefresh)="pullToRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    
     <div *ngIf="!locations"
          style="z-index:9999;height: 90px;position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);width: 80%;text-align: center">
       <ion-spinner color="primary" style="width: 90px;height: 90px;"></ion-spinner>

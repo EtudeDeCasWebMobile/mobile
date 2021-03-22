@@ -10,12 +10,16 @@
   </div>
 
   <div class="list-container">
+    <ion-refresher slot="fixed" (ionRefresh)="pullToRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
     <div *ngIf="!collections && !sharedCollections"
          style="z-index:9999;height: 90px;position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);width: 80%;text-align: center">
       <ion-spinner color="primary" style="width: 90px;height: 90px;"></ion-spinner>
     </div>
 
-    <ion-virtual-scroll [fxShow]="filters[0].checked"  [items]="collections" approxItemHeight="60px">
+    <ion-virtual-scroll [fxShow]="filters[0].checked" [items]="collections" approxItemHeight="60px">
       <div *virtualItem="let collection;" class="list-item" fxLayout="row" fxLayoutAlign="start center"
            fxLayoutGap="1em">
         <div class="item-img-container">
@@ -56,9 +60,10 @@
       </div>
     </ion-virtual-scroll>
 
-    <div *ngIf="collections?.length===0 && sharedCollections?.length===0"
-         class="empty-results">
-      <h3>No collection have been created</h3>
+    <div
+      *ngIf="(collections?.length===0 || !filters[0].checked) && (sharedCollections?.length===0 || !filters[1].checked)"
+      class="empty-results">
+      <h3>No collection have been found</h3>
     </div>
 
   </div>

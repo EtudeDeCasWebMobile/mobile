@@ -23,6 +23,10 @@ const routes: Routes = [
     loadChildren: () => import('./add-location/add-location.module').then(m => m.AddLocationPageModule)
   },
   {
+    path: 'add-collection',
+    loadChildren: () => import('./add-collection/add-collection.module').then(m => m.AddCollectionPageModule)
+  },
+  {
     path: '**',
     redirectTo: 'login',
     pathMatch: 'full'
