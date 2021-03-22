@@ -33,8 +33,8 @@ export class LocationsComponent implements OnInit {
       },
       {
         image: '',
-        title: 'titre1',
-        description: 'description1',
+        title: 'titre2',
+        description: 'description2',
         coordinate: {
           lat: 0, lon: 0
         },
@@ -42,8 +42,8 @@ export class LocationsComponent implements OnInit {
       },
       {
         image: '',
-        title: 'titre1',
-        description: 'description1',
+        title: 'titre3',
+        description: 'description3',
         coordinate: {
           lat: 0, lon: 0
         },
@@ -51,8 +51,17 @@ export class LocationsComponent implements OnInit {
       },
       {
         image: '',
-        title: 'titre1',
-        description: 'description1',
+        title: 'titre4',
+        description: 'description4',
+        coordinate: {
+          lat: 0, lon: 0
+        },
+        tags: ['']
+      },
+      {
+        image: '',
+        title: 'titre5',
+        description: 'description5',
         coordinate: {
           lat: 0, lon: 0
         },

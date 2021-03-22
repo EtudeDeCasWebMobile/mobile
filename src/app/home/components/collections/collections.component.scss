@@ -81,3 +81,8 @@ ion-virtual-scroll {
   text-align: center;
   color: white
 }
+
+ion-virtual-scroll{
+  overflow-y: scroll;
+  height: calc(100vh - 102px)!important;
+}
