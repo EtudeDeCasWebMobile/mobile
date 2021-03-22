@@ -24,6 +24,9 @@ export class AuthService {
   public isAuthenticated$(): Observable<boolean> {
     return from(this.storage.get('user'))
       .pipe(map(user => {
+        if (!!user && !!user.authToken && this.jwtHelperService.isTokenExpired(user.authToken)) {
+          this.logout();
+        }
         this.isAuthenticatedSubject.next(!!(!!user && !!user.authToken && !this.jwtHelperService.isTokenExpired(user.authToken)));
         return !!(!!user && !!user.authToken && !this.jwtHelperService.isTokenExpired(user.authToken));
       }));

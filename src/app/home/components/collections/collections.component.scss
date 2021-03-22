@@ -63,11 +63,21 @@
 }
 
 ion-virtual-scroll {
-  height: 100vh!important;
+  height: 100vh !important;
 }
 
-.filter-container{
-  width:100%;
+.filter-container {
+  width: 100%;
   background-color: var(--ion-color-primary);
   height: 2.5em;
+}
+
+.empty-results {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  text-align: center;
+  color: white
 }

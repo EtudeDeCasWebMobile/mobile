@@ -17,14 +17,16 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
-  }, {
+  },
+  {
+    path: 'add-location',
+    loadChildren: () => import('./add-location/add-location.module').then(m => m.AddLocationPageModule)
+  },
+  {
     path: '**',
     redirectTo: 'login',
     pathMatch: 'full'
-  },  {
-    path: 'add-location',
-    loadChildren: () => import('./add-location/add-location.module').then( m => m.AddLocationPageModule)
-  },
+  }
 
 ];
 
@@ -34,5 +36,6 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
+// @ts-ignore
 export class AppRoutingModule {
 }

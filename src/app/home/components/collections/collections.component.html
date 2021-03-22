@@ -1,4 +1,4 @@
-<div style="position: relative">
+<div>
   <div class="filter-container" fxLayoutGap="1em" fxLayoutAlign="center center" fxLayout="row" [fxShow]="isFilterShown">
 
 
@@ -10,12 +10,12 @@
   </div>
 
   <div class="list-container">
-    <div *ngIf="!collections?.length"
+    <div *ngIf="!collections && !sharedCollections"
          style="z-index:9999;height: 90px;position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);width: 80%;text-align: center">
       <ion-spinner color="primary" style="width: 90px;height: 90px;"></ion-spinner>
     </div>
 
-    <ion-virtual-scroll [items]="collections" approxItemHeight="60px">
+    <ion-virtual-scroll [fxShow]="filters[0].checked"  [items]="collections" approxItemHeight="60px">
       <div *virtualItem="let collection;" class="list-item" fxLayout="row" fxLayoutAlign="start center"
            fxLayoutGap="1em">
         <div class="item-img-container">
@@ -34,8 +34,30 @@
       </div>
     </ion-virtual-scroll>
 
-    <div *ngIf="collections?.length===0"
-         style="position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);width: 80%;text-align: center">
+    <ion-virtual-scroll [fxShow]="filters[1].checked" [items]="sharedCollections" approxItemHeight="60px">
+      <div *virtualItem="let collection;" class="list-item" fxLayout="row" fxLayoutAlign="start center"
+           fxLayoutGap="1em">
+        <div class="item-img-container">
+          <ion-icon name="bookmark" class="tag-icon"></ion-icon>
+        </div>
+        <div class="item-title" fxLayout="column">
+            <span>
+              {{ collection.tag }}
+            </span>
+          <span>
+              {{ collection?.owner?.email }}
+            </span>
+        </div>
+        <div fxLayout="row" fxLayoutGap="2px" class="container--location-icons">
+          <span style="font-size: 18px">{{collection.locations.length}}</span>
+          <ion-icon name="location-outline" style="font-size: 21px"></ion-icon>
+        </div>
+
+      </div>
+    </ion-virtual-scroll>
+
+    <div *ngIf="collections?.length===0 && sharedCollections?.length===0"
+         class="empty-results">
       <h3>No collection have been created</h3>
     </div>
 
@@ -47,4 +69,5 @@
       <ion-icon class="fab-add-icon" name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+
 </div>

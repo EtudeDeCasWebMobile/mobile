@@ -12,13 +12,14 @@
 
 <ion-content>
   <div class="ion-padding">
-    <ion-list id="labels-list">
-      <ion-item [fxHide]="isAuthenticated" button lines="full" (click)="changeServerUrl()">
+    <ion-list >
+      <ion-item [fxHide]="isAuthenticated" button lines="full" (click)="changeServerUrl()" class="labels-list">
         <ion-label>
           <span translate>Server Url</span>
         </ion-label>
-        <ion-text
-          style="color: grey;width: 33%">{{serverUrl.length > 15 ? serverUrl.substr(0, 13) + '...' : serverUrl}}</ion-text>
+        <ion-text style="color: grey;width: 33%">
+          {{serverUrl.length > 15 ? serverUrl.substr(0, 13) + '...' : serverUrl}}
+        </ion-text>
       </ion-item>
     </ion-list>
   </div>

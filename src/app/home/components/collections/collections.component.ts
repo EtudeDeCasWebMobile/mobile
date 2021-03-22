@@ -9,7 +9,8 @@ import {CollectionsService} from '../../../services/collections.service';
 })
 export class CollectionsComponent implements OnInit {
 
-  public collections: CollectionInterface[] = [];
+  public collections: CollectionInterface[];
+  public sharedCollections: CollectionInterface[];
   public isFilterShown = false;
   public filters = [{
     title: 'Owned collections',
@@ -29,35 +30,13 @@ export class CollectionsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.collectionsService.getAllOwnedCollection().subscribe(console.log);
+    this.sharedCollections = []; // wait for api implementation
+    this.collectionsService
+      .getAllOwnedCollection()
+      .subscribe((res: { collections: CollectionInterface[] }) => {
+        this.collections = res.collections;
+      });
 
-    this.collections = [
-      {
-        id: 1,
-        tag: 'collection1',
-        locations: [],
-        owner: {
-          id: 1,
-          email: 'tecabek762@naymio.com'
-        }
-      }, {
-        id: 2,
-        tag: 'collection2',
-        locations: [],
-        owner: {
-          id: 1,
-          email: 'tecabek762@naymio.com'
-        }
-      }, {
-        id: 3,
-        tag: 'collection3',
-        locations: [],
-        owner: {
-          id: 1,
-          email: 'tecabek762@naymio.com'
-        }
-      }
-    ];
 
   }
 
