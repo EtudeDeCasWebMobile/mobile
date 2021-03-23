@@ -104,7 +104,7 @@ export class CollectionsComponent implements OnInit {
       await this.delete(collection);
     } else if (data === 'edit') {
       console.log('edit');
-      //  await this.router.navigateByUrl(`/edit/${contact.id}`);
+      await this.router.navigateByUrl(`/edit-collection/${collection.id}`);
     }
   }
 

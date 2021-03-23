@@ -28,11 +28,36 @@ export class CollectionsService {
       );
   }
 
+  public findCollection(id: number) {
+    let link;
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          link = url;
+          return this.storage.get('user');
+        }),
+        switchMap(user => {
+          return this.httpClient.get(`${environment.url}${link}/collections/${id}?token=${user?.authToken}`);
+        })
+      );
+  }
+
   public createCollection(tag: string) {
     return from(this.storage.get('server'))
       .pipe(
         switchMap(url => {
           return this.httpClient.post(`${environment.url}${url}/me/collections`, {
+            tag
+          });
+        })
+      );
+  }
+
+  public updateCollection(id: number, tag: string) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          return this.httpClient.put(`${environment.url}${url}/collections/${id}`, {
             tag
           });
         })

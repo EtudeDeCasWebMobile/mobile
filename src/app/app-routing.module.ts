@@ -27,10 +27,15 @@ const routes: Routes = [
     loadChildren: () => import('./add-collection/add-collection.module').then(m => m.AddCollectionPageModule)
   },
   {
+    path: 'edit-collection/:id',
+    loadChildren: () => import('./edit-collection/edit-collection.module').then( m => m.EditCollectionPageModule)
+  },
+  {
     path: '**',
     redirectTo: 'login',
     pathMatch: 'full'
   }
+
 
 ];
 
