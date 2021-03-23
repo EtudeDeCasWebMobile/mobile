@@ -107,4 +107,37 @@ export class EditCollectionPage implements OnInit {
     }
   }
 
+  public async deleteCollection() {
+    const confirmRet = await Modals.confirm({
+      title: 'Confirmation',
+      message: `Are you sure you want to delete '${this.collection?.tag}'`,
+      cancelButtonTitle: `Cancel`,
+      okButtonTitle: `Delete`
+    });
+    if (confirmRet.value) {
+      this.collectionsService.deleteCollection(this.collection?.id)
+        .pipe(
+          catchError((err) => {
+            Toast.show({
+              position: 'bottom',
+              text: `An error occured, try again`
+            });
+            return throwError(err);
+          })
+        )
+        .subscribe(result => {
+          Toast.show({
+            text: `${this.collection?.tag} have been successfully deleted`,
+            duration: 'long',
+            position: 'bottom'
+          });
+
+          this.router.navigateByUrl(`/home/collections`);
+
+        });
+    }
+
+  }
+
+
 }

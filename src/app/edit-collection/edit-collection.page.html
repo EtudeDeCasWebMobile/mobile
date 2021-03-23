@@ -9,9 +9,15 @@
         <span translate>{{collection?.tag}}</span>
       </span>
     </ion-title>
-    <ion-button slot="end" (click)="editCollectionTitle()">
-      <ion-icon style="color:whitesmoke;font-size:24px" name="create-outline"></ion-icon>
-    </ion-button>
+    <ion-buttons slot="end">
+      <ion-button (click)="editCollectionTitle()">
+        <ion-icon style="color:whitesmoke;font-size:24px" name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="deleteCollection()">
+        <ion-icon color="secondary" style="font-size:24px" name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
