@@ -39,4 +39,13 @@ export class CollectionsService {
       );
   }
 
+  public deleteCollection(id: number) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          return this.httpClient.delete(`${environment.url}${url}/collections/${id}`);
+        })
+      );
+  }
+
 }

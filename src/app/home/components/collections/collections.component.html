@@ -20,7 +20,7 @@
     </div>
 
     <ion-virtual-scroll [fxShow]="filters[0].checked" [items]="collections" approxItemHeight="60px">
-      <div *virtualItem="let collection;" class="list-item" fxLayout="row" fxLayoutAlign="start center"
+      <div (press)="showPopup($event,collection)" *virtualItem="let collection;" class="list-item ion-activatable ripple-parent" fxLayout="row" fxLayoutAlign="start center"
            fxLayoutGap="1em">
         <div class="item-img-container">
           <ion-icon name="bookmark" class="tag-icon"></ion-icon>
@@ -34,7 +34,7 @@
           <span style="font-size: 18px">{{collection.locations.length}}</span>
           <ion-icon name="location-outline" style="font-size: 21px"></ion-icon>
         </div>
-
+        <ion-ripple-effect></ion-ripple-effect>
       </div>
     </ion-virtual-scroll>
 

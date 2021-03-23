@@ -6,6 +6,7 @@ import {HomePage} from './home.page';
 import {SharedModule} from '../shared/shared.module';
 import {CollectionsComponent} from './components/collections/collections.component';
 import {LocationsComponent} from './components/locations/locations.component';
+import {CollectionActionComponent} from './components/collections/components/collection-action/collection-action.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import {LocationsComponent} from './components/locations/locations.component';
   declarations: [
     HomePage,
     CollectionsComponent,
-    LocationsComponent
+    LocationsComponent,
+    CollectionActionComponent
   ]
 })
 export class HomePageModule {

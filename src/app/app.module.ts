@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
+import {BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule} from '@angular/platform-browser';
 import {RouteReuseStrategy} from '@angular/router';
 
 import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
@@ -19,6 +19,15 @@ import {LoadingBarModule} from '@ngx-loading-bar/core';
 import {LoadingBarHttpClientModule} from '@ngx-loading-bar/http-client';
 import {SharedModule} from './shared/shared.module';
 
+export class MyHammerConfig extends HammerGestureConfig {
+  buildHammer(element: HTMLElement) {
+    // @ts-ignore
+    return new Hammer(element, {
+      touchAction: 'pan-y',
+    });
+  }
+}
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -33,12 +42,15 @@ import {SharedModule} from './shared/shared.module';
     HttpClientModule,
     LoadingBarModule,
     LoadingBarHttpClientModule,
+    HammerModule,
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production})
   ],
   providers: [
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
-    {provide: JwtHelperService, useValue: new JwtHelperService()}
+    {provide: JwtHelperService, useValue: new JwtHelperService()},
+    {provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig}
+
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],

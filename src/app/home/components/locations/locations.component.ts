@@ -95,7 +95,7 @@ export class LocationsComponent implements OnInit {
   }
 
   pullToRefresh($event: any) {
-    //this.locations=[];
+    // this.locations=[];
     $event.target.complete();
 
   }
