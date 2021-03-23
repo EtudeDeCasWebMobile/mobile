@@ -14,9 +14,13 @@
 
     <ion-button class="btn" expand="block" (click)="createCollection()">Create</ion-button>
 
-    <ion-button class="btn" expand="block">Import</ion-button>
+    <ion-button class="btn" expand="block" (click)="fileInput.click()">Import</ion-button>
+    <input type="file" [hidden]="true"
+           accept=".json,application/json"
+           #fileInput (change)="onFileChange($event)">
 
-    <ion-button class="btn" expand="block">Add url</ion-button>
+
+    <ion-button class="btn" expand="block" (click)="addCollectionUrl()">Add url</ion-button>
 
   </div>
 </ion-content>

@@ -1,10 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {Plugins} from '@capacitor/core';
 import {CollectionsService} from '../services/collections.service';
-import {catchError} from 'rxjs/operators';
+import {catchError, switchMap} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
-import {throwError} from 'rxjs';
+import {from, throwError} from 'rxjs';
 import {Router} from '@angular/router';
+import {Storage} from '@ionic/storage';
+import {Geojson} from 'geojson-parser-js';
+
 
 const {Toast, Modals} = Plugins;
 
@@ -15,9 +18,12 @@ const {Toast, Modals} = Plugins;
 })
 export class AddCollectionPage implements OnInit {
 
+  public user;
+
   constructor(
     private readonly collectionsService: CollectionsService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly storage: Storage
   ) {
   }
 
@@ -65,11 +71,75 @@ export class AddCollectionPage implements OnInit {
             position: 'bottom',
             text: `Collection created`
           });
-         // this.router.navigateByUrl(`/home/collections`);
+          // this.router.navigateByUrl(`/home/collections`);
         });
 
     }
 
   }
+
+  public async addCollectionUrl() {
+    // @ts-ignore
+    const {value, cancelled} = await Modals.prompt({
+      okButtonTitle: 'Save',
+      title: `Add collection url`,
+      cancelButtonTitle: `Cancel`,
+      inputPlaceholder: `Tag`
+    });
+    if (value?.trim()?.length > 0 && !cancelled) {
+      // create the collection
+      from(this.storage.get('user'))
+        .pipe(
+          switchMap((res) => {
+            this.user = res;
+            return from(this.storage.get('urls'));
+          }),
+          switchMap((res) => {
+            let oldVal = [];
+            if (!!res) {
+              oldVal = res;
+            } else {
+              oldVal.push({
+                id: this.user.id,
+                urls: []
+              });
+            }
+
+            oldVal = oldVal.map(elm => {
+              if (elm.id === this.user.id) {
+                elm.urls.push(value);
+              }
+              return elm;
+            });
+
+            return from(this.storage.set('urls', oldVal));
+          })
+        ).subscribe(console.log);
+
+    }
+
+  }
+
+  public onFileChange(event) {
+    if (event.target.files && event.target.files.length) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const data = reader.result;
+        if (!Geojson.isValid(data as string)) {
+          Toast.show({
+            duration: 'long',
+            position: 'bottom',
+            text: `Invalid geojson file`
+          });
+        } else {
+          console.log(Geojson.parse(data as string));
+        }
+
+      };
+      reader.readAsText(file, 'UTF-8');
+    }
+  }
+
 
 }

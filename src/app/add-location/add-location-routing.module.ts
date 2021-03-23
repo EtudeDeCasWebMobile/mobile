@@ -1,12 +1,14 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 
-import { AddLocationPage } from './add-location.page';
+import {AddLocationPage} from './add-location.page';
+import {AuthGuard} from '../guards/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: AddLocationPage
+    component: AddLocationPage,
+    canActivate: [AuthGuard]
   }
 ];
 
@@ -14,4 +16,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AddLocationPageRoutingModule {}
+export class AddLocationPageRoutingModule {
+}
