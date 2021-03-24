@@ -19,7 +19,7 @@
       <ion-spinner color="primary" style="width: 90px;height: 90px;"></ion-spinner>
     </div>
 
-    <ion-virtual-scroll [fxShow]="filters[0].checked" [items]="collections" approxItemHeight="60px">
+    <ion-virtual-scroll [fxShow]="filters[0].checked" [items]="collections" approxItemHeight="72px">
       <div (click)="viewCollection(collection)" (press)="showPopup($event,collection)" *virtualItem="let collection;" class="list-item ion-activatable ripple-parent" fxLayout="row" fxLayoutAlign="start center"
            fxLayoutGap="1em">
         <div class="item-img-container">
@@ -38,8 +38,8 @@
       </div>
     </ion-virtual-scroll>
 
-    <ion-virtual-scroll [fxShow]="filters[1].checked" [items]="sharedCollections" approxItemHeight="60px">
-      <div (press)="showPopup($event,collection)" (click)="viewCollection(collection)" *virtualItem="let collection;" class="list-item" fxLayout="row" fxLayoutAlign="start center"
+    <ion-virtual-scroll [fxShow]="filters[1].checked" [items]="sharedCollections" approxItemHeight="72px">
+      <div (press)="showPopup($event,collection)" (click)="viewCollection(collection,true)" *virtualItem="let collection;" class="list-item" fxLayout="row" fxLayoutAlign="start center"
            fxLayoutGap="1em">
         <div class="item-img-container">
           <ion-icon name="bookmark" class="tag-icon"></ion-icon>

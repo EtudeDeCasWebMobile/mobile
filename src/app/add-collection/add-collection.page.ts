@@ -104,6 +104,13 @@ export class AddCollectionPage implements OnInit {
                 urls: []
               });
             }
+            if (!(oldVal.find(elm => elm.id === this.user.id))) {
+              oldVal.push({
+                id: this.user.id,
+                urls: []
+              });
+            }
+
 
             oldVal = oldVal.map(elm => {
               if (elm.id === this.user.id) {

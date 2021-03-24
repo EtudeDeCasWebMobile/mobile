@@ -10,13 +10,13 @@
       </span>
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="shareCollection()">
+      <ion-button (click)="shareCollection()" *ngIf="!isShared">
         <ion-icon style="color:whitesmoke;font-size:24px" name="share-social-outline"></ion-icon>
       </ion-button>
-      <ion-button (click)="editCollectionTitle()">
+      <ion-button (click)="editCollectionTitle()" *ngIf="!isShared">
         <ion-icon style="color:whitesmoke;font-size:24px" name="create-outline"></ion-icon>
       </ion-button>
-      <ion-button (click)="deleteCollection()">
+      <ion-button (click)="deleteCollection()" *ngIf="!isShared">
         <ion-icon color="secondary" style="font-size:24px" name="trash-outline"></ion-icon>
       </ion-button>
     </ion-buttons>

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {from, Subject} from 'rxjs';
+import {from, Observable, of, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {switchMap} from 'rxjs/operators';
@@ -28,6 +28,20 @@ export class CollectionsService {
       );
   }
 
+  public generateLink(id: string): Observable<string> {
+    let link;
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          link = url;
+          return this.storage.get('user');
+        }),
+        switchMap(user => {
+          return of(`${environment.url}${link}/collections/${id}?token=${user?.authToken}`);
+        })
+      );
+  }
+
   public findCollection(id: number) {
     let link;
     return from(this.storage.get('server'))
@@ -38,6 +52,15 @@ export class CollectionsService {
         }),
         switchMap(user => {
           return this.httpClient.get(`${environment.url}${link}/collections/${id}?token=${user?.authToken}`);
+        })
+      );
+  }
+
+  public findSharedCollection(link: string) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(user => {
+          return this.httpClient.get(`${environment.url}${link}`);
         })
       );
   }

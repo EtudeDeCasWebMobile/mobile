@@ -7,8 +7,10 @@ import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {Platform, PopoverController} from '@ionic/angular';
 import {CollectionActionComponent} from './components/collection-action/collection-action.component';
 import {Plugins} from '@capacitor/core';
-import {catchError} from 'rxjs/operators';
-import {throwError} from 'rxjs';
+import {catchError, map, switchMap} from 'rxjs/operators';
+import {forkJoin, from, throwError} from 'rxjs';
+import {HttpErrorResponse} from '@angular/common/http';
+import {Storage} from '@ionic/storage';
 
 
 const {Haptics, Toast, Modals} = Plugins;
@@ -25,6 +27,7 @@ export class CollectionsComponent implements OnInit {
   public sharedCollections: CollectionInterface[];
   public originalSharedCollections: CollectionInterface[];
   public isFilterShown = false;
+  public user;
   public filters = [{
     title: 'Owned collections',
     checked: true
@@ -38,7 +41,8 @@ export class CollectionsComponent implements OnInit {
     private readonly router: Router,
     private readonly platform: Platform,
     private readonly popoverController: PopoverController,
-    private readonly activatedRoute: ActivatedRoute
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly storage: Storage
   ) {
     this.collectionsService.showHideFilter.subscribe(res => {
       this.isFilterShown = res;
@@ -67,6 +71,38 @@ export class CollectionsComponent implements OnInit {
         this.collections = res.collections;
         this.originalCollections = res.collections;
       });
+
+    from(this.storage.get('user'))
+      .pipe(
+        switchMap(user => {
+          this.user = user;
+          return from(this.storage.get('urls'));
+        }),
+        map((res) => {
+          let temp;
+          res.map((val) => {
+            if (val.id === this.user.id) {
+              temp = val;
+            }
+          });
+          console.log(temp);
+
+
+          return temp;
+        }),
+        switchMap(res => {
+          const arr = [];
+          res.urls.map(r => {
+            arr.push(this.collectionsService.findSharedCollection(r));
+          });
+          return forkJoin(arr);
+        })
+      ).subscribe((res: CollectionInterface[]) => {
+      this.sharedCollections = res;
+      this.originalSharedCollections = res;
+      console.log(this.sharedCollections);
+    });
+
   }
 
   /**
@@ -88,13 +124,8 @@ export class CollectionsComponent implements OnInit {
   }
 
   pullToRefresh($event: any) {
-    this.collectionsService
-      .getAllOwnedCollection()
-      .subscribe((res: { collections: CollectionInterface[] }) => {
-        this.collections = res.collections;
-        this.originalCollections = res.collections;
-        $event.target.complete();
-      });
+    this.loadData();
+    $event.target.complete();
   }
 
   async showPopup(event, collection: any) {
@@ -129,10 +160,17 @@ export class CollectionsComponent implements OnInit {
       this.collectionsService.deleteCollection(collection.id)
         .pipe(
           catchError((err) => {
-            Toast.show({
-              position: 'bottom',
-              text: `An error occured, try again`
-            });
+            if (err instanceof HttpErrorResponse && err.status === 403) {
+              Toast.show({
+                position: 'bottom',
+                text: `Only the owner of the collection can delete it`
+              });
+            } else {
+              Toast.show({
+                position: 'bottom',
+                text: `An error occured, try again`
+              });
+            }
             return throwError(err);
           })
         )
@@ -150,8 +188,17 @@ export class CollectionsComponent implements OnInit {
     }
   }
 
-  public viewCollection(collection) {
-    this.router.navigateByUrl(`/edit-collection/${collection.id}`);
+  public viewCollection(collection, shared = false) {
+    if (shared) {
+      this.router.navigate([`/edit-collection/${collection.id}`], {
+        state: collection,
+        queryParams: {shared: true}
+      });
+    } else {
+      this.router.navigate([`/edit-collection/${collection.id}`], {
+        state: collection
+      });
+    }
   }
 
 }

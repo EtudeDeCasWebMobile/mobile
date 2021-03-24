@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CollectionsService} from '../services/collections.service';
-import {catchError, switchMap} from 'rxjs/operators';
+import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
 import {throwError} from 'rxjs';
 import {Plugins} from '@capacitor/core';
@@ -17,6 +17,7 @@ const {Toast, Modals, Clipboard} = Plugins;
 })
 export class EditCollectionPage implements OnInit {
   private collection: CollectionInterface;
+  public isShared = false;
 
   constructor(
     private readonly router: Router,
@@ -27,38 +28,17 @@ export class EditCollectionPage implements OnInit {
   }
 
   ngOnInit() {
-    this.activatedRoute.params
-      .pipe(
-        switchMap(data => {
-          return this.collectionsService.findCollection(data.id);
-        }),
-        catchError((err) => {
-          if (err instanceof HttpErrorResponse) {
-            if (err.status === 409) {
-              Toast.show({
-                position: 'bottom',
-                duration: 'long',
-                text: `Collection with the same name already exist`
-              });
-            } else {
-              Toast.show({
-                position: 'bottom',
-                text: `An error occured, try again`
-              });
-            }
-          } else {
-            Toast.show({
-              position: 'bottom',
-              text: `Unable to connect to server`
-            });
-          }
-          return throwError(err);
-        })
-      )
-      .subscribe((res: CollectionInterface) => {
-        console.log(res);
-        this.collection = res;
-      });
+
+    this.activatedRoute.queryParams.subscribe(ignored => {
+      this.isShared = ignored.shared;
+      // @ts-ignore
+      this.collection = this.router.getCurrentNavigation().extras.state;
+      if (!this.collection) {
+        this.router.navigateByUrl('/home/collections');
+      }
+    });
+
+
   }
 
   public async editCollectionTitle() {
@@ -120,10 +100,17 @@ export class EditCollectionPage implements OnInit {
       this.collectionsService.deleteCollection(this.collection?.id)
         .pipe(
           catchError((err) => {
-            Toast.show({
-              position: 'bottom',
-              text: `An error occured, try again`
-            });
+            if (err instanceof HttpErrorResponse && err.status === 403) {
+              Toast.show({
+                position: 'bottom',
+                text: `Only the owner of the collection can delete it`
+              });
+            } else {
+              Toast.show({
+                position: 'bottom',
+                text: `An error occured, try again`
+              });
+            }
             return throwError(err);
           })
         )

@@ -13,8 +13,8 @@
 
 .list-container {
   background-color: var(--page-background-color);
-  height: 100vh;
-  //    margin-top: -7px;
+  overflow-y: scroll;
+  height: calc(100vh - 110px);
 }
 
 .list-item {
@@ -68,9 +68,6 @@
   margin: 7px;
 }
 
-ion-virtual-scroll {
-  height: 100vh !important;
-}
 
 .filter-container {
   width: 100%;
@@ -86,9 +83,4 @@ ion-virtual-scroll {
   width: 80%;
   text-align: center;
   color: white
-}
-
-ion-virtual-scroll {
-  overflow-y: scroll;
-  height: calc(100vh - 102px) !important;
 }
