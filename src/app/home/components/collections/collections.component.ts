@@ -3,7 +3,7 @@ import {CollectionInterface} from '../../../models/collection.interface';
 import {CollectionsService} from '../../../services/collections.service';
 // @ts-ignore
 import FuzzySearch from 'fuzzy-search';
-import {Router} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {Platform, PopoverController} from '@ionic/angular';
 import {CollectionActionComponent} from './components/collection-action/collection-action.component';
 import {Plugins} from '@capacitor/core';
@@ -37,7 +37,8 @@ export class CollectionsComponent implements OnInit {
     private readonly collectionsService: CollectionsService,
     private readonly router: Router,
     private readonly platform: Platform,
-    private readonly popoverController: PopoverController
+    private readonly popoverController: PopoverController,
+    private readonly activatedRoute: ActivatedRoute
   ) {
     this.collectionsService.showHideFilter.subscribe(res => {
       this.isFilterShown = res;
@@ -48,16 +49,24 @@ export class CollectionsComponent implements OnInit {
 
     this.sharedCollections = []; // wait for api implementation
     this.originalSharedCollections = []; // wait for api implementation
+    this.loadData();
+    this.collectionsService.search.subscribe(res => {
+      this.search(res);
+    });
+
+    this.activatedRoute.queryParamMap.subscribe((paramMap: ParamMap) => {
+      this.loadData();
+    });
+
+  }
+
+  public loadData() {
     this.collectionsService
       .getAllOwnedCollection()
       .subscribe((res: { collections: CollectionInterface[] }) => {
         this.collections = res.collections;
         this.originalCollections = res.collections;
       });
-    this.collectionsService.search.subscribe(res => {
-      this.search(res);
-    });
-
   }
 
   /**
@@ -129,12 +138,7 @@ export class CollectionsComponent implements OnInit {
         )
         .subscribe(result => {
           console.log(result);
-          this.collectionsService
-            .getAllOwnedCollection()
-            .subscribe((res: { collections: CollectionInterface[] }) => {
-              this.collections = res.collections;
-              this.originalCollections = res.collections;
-            });
+          this.loadData();
 
           Toast.show({
             text: `${collection.tag} have been successfully deleted`,
@@ -144,6 +148,10 @@ export class CollectionsComponent implements OnInit {
 
         });
     }
+  }
+
+  public viewCollection(collection) {
+    this.router.navigateByUrl(`/edit-collection/${collection.id}`);
   }
 
 }

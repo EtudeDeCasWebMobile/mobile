@@ -64,6 +64,15 @@ export class CollectionsService {
       );
   }
 
+  public shareCollection(id: number) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          return this.httpClient.post(`${environment.url}${url}/collections/${id}/share`, {});
+        })
+      );
+  }
+
   public deleteCollection(id: number) {
     return from(this.storage.get('server'))
       .pipe(

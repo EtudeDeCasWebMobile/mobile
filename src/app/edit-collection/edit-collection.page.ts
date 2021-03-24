@@ -6,8 +6,9 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {throwError} from 'rxjs';
 import {Plugins} from '@capacitor/core';
 import {CollectionInterface} from '../models/collection.interface';
+import {AlertController} from '@ionic/angular';
 
-const {Toast, Modals} = Plugins;
+const {Toast, Modals, Clipboard} = Plugins;
 
 @Component({
   selector: 'app-edit-collection',
@@ -20,7 +21,8 @@ export class EditCollectionPage implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly collectionsService: CollectionsService
+    private readonly collectionsService: CollectionsService,
+    private readonly alertController: AlertController
   ) {
   }
 
@@ -136,6 +138,62 @@ export class EditCollectionPage implements OnInit {
 
         });
     }
+
+  }
+
+  public async shareCollection() {
+    this.collectionsService.shareCollection(this.collection.id)
+      .pipe(
+        catchError((err) => {
+          if (err instanceof HttpErrorResponse && err.status === 403) {
+            Toast.show({
+              position: 'bottom',
+              duration: 'long',
+              text: `Only collection owner can request collection shareable link`
+            });
+          } else {
+            Toast.show({
+              position: 'bottom',
+              text: `An error occured, try again`
+            });
+          }
+          return throwError(err);
+        })
+      )
+      .subscribe(async (res: { token: string, link: string }) => {
+
+        console.log(`${res.link}?token=${res.token}`);
+
+        const alert = await this.alertController.create({
+          cssClass: 'my-custom-class',
+          header: 'Shared link',
+          inputs: [
+            {
+              name: 'token',
+              type: 'text',
+              id: 'token',
+              value: `${res.link}?token=${res.token}`,
+              attributes: {readonly: true}
+            }
+          ],
+          buttons: [
+            {
+              text: 'Copy',
+              handler: () => {
+                Clipboard.write({string: `${res.link}?token=${res.token}`});
+                Toast.show({
+                  duration: 'short',
+                  position: 'bottom',
+                  text: 'Link have been copied'
+                });
+              }
+            }
+          ]
+        });
+
+        await alert.present();
+
+      });
 
   }
 

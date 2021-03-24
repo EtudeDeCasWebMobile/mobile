@@ -114,7 +114,14 @@ export class AddCollectionPage implements OnInit {
 
             return from(this.storage.set('urls', oldVal));
           })
-        ).subscribe(console.log);
+        ).subscribe(res => {
+        console.log(res);
+        Toast.show({
+          text: `Link successfully added`,
+          position: 'bottom',
+          duration: 'long'
+        });
+      });
 
     }
 
