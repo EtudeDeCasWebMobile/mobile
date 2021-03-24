@@ -6,7 +6,8 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {throwError} from 'rxjs';
 import {Plugins} from '@capacitor/core';
 import {CollectionInterface} from '../models/collection.interface';
-import {AlertController} from '@ionic/angular';
+import {AlertController, ModalController} from '@ionic/angular';
+import {AddLocationComponent} from './component/add-location/add-location.component';
 
 const {Toast, Modals, Clipboard} = Plugins;
 
@@ -23,7 +24,8 @@ export class EditCollectionPage implements OnInit {
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
     private readonly collectionsService: CollectionsService,
-    private readonly alertController: AlertController
+    private readonly alertController: AlertController,
+    private readonly modalController: ModalController
   ) {
   }
 
@@ -184,5 +186,16 @@ export class EditCollectionPage implements OnInit {
 
   }
 
+
+  public async addLocationToCollection() {
+    console.log('add location to collection');
+    const modal = await this.modalController.create({
+      component: AddLocationComponent,
+      componentProps: {
+        collection: this.collection
+      }
+    });
+    return await modal.present();
+  }
 
 }

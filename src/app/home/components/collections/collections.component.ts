@@ -4,7 +4,7 @@ import {CollectionsService} from '../../../services/collections.service';
 // @ts-ignore
 import FuzzySearch from 'fuzzy-search';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {Platform, PopoverController} from '@ionic/angular';
+import {ModalController, Platform, PopoverController} from '@ionic/angular';
 import {CollectionActionComponent} from './components/collection-action/collection-action.component';
 import {Plugins} from '@capacitor/core';
 import {catchError, map, switchMap} from 'rxjs/operators';
@@ -42,7 +42,8 @@ export class CollectionsComponent implements OnInit {
     private readonly platform: Platform,
     private readonly popoverController: PopoverController,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly storage: Storage
+    private readonly storage: Storage,
+    private readonly modalController: ModalController
   ) {
     this.collectionsService.showHideFilter.subscribe(res => {
       this.isFilterShown = res;
