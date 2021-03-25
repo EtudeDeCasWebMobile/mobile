@@ -8,7 +8,7 @@ import {ModalController, Platform, PopoverController} from '@ionic/angular';
 import {CollectionActionComponent} from './components/collection-action/collection-action.component';
 import {Plugins} from '@capacitor/core';
 import {catchError, map, switchMap} from 'rxjs/operators';
-import {forkJoin, from, throwError} from 'rxjs';
+import {forkJoin, from, of, throwError} from 'rxjs';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 
@@ -94,11 +94,16 @@ export class CollectionsComponent implements OnInit {
         switchMap(res => {
           const arr = [];
           res.urls.map(r => {
-            arr.push(this.collectionsService.findSharedCollection(r));
+            arr.push(
+              this.collectionsService.findSharedCollection(r)
+                .pipe(catchError(err => of(undefined)))
+            );
           });
           return forkJoin(arr);
-        })
+        }),
+        // @ts-ignore
       ).subscribe((res: CollectionInterface[]) => {
+      res = res.filter(e => !!e);
       this.sharedCollections = res;
       this.originalSharedCollections = res;
       console.log(this.sharedCollections);
