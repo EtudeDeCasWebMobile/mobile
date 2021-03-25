@@ -17,7 +17,7 @@ const {Toast, Modals, Clipboard} = Plugins;
   styleUrls: ['./edit-collection.page.scss'],
 })
 export class EditCollectionPage implements OnInit {
-  private collection: CollectionInterface;
+  public collection: CollectionInterface;
   public isShared = false;
 
   constructor(
