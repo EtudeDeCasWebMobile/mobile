@@ -11,6 +11,7 @@ import {catchError, map, switchMap} from 'rxjs/operators';
 import {forkJoin, from, of, throwError} from 'rxjs';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
+import {AuthService} from '../../../services/auth.service';
 
 
 const {Haptics, Toast, Modals} = Plugins;
@@ -43,17 +44,44 @@ export class CollectionsComponent implements OnInit {
     private readonly popoverController: PopoverController,
     private readonly activatedRoute: ActivatedRoute,
     private readonly storage: Storage,
-    private readonly modalController: ModalController
+    private readonly modalController: ModalController,
+    private readonly authService: AuthService
   ) {
+
     this.collectionsService.showHideFilter.subscribe(res => {
       this.isFilterShown = res;
     });
+
+    this.activatedRoute.queryParams
+      .pipe(
+        switchMap(res => this.authService.getCurrentUser())
+      ).subscribe(res => {
+      this.user = res;
+    });
+
   }
 
   ngOnInit() {
 
     this.sharedCollections = []; // wait for api implementation
     this.originalSharedCollections = []; // wait for api implementation
+    this.activatedRoute.queryParams
+      .pipe(
+        switchMap(res => this.authService.getCurrentUser())
+      ).subscribe(res => {
+      this.user = res;
+      // tslint:disable-next-line:triple-equals
+      if (res?.id == 0) {
+        this.filters[0].checked = false;
+        this.filters[1].checked = true;
+        this.isFilterShown = false;
+      } else {
+        this.filters[0].checked = true;
+        this.filters[1].checked = true;
+      }
+    });
+
+
     this.loadData();
     this.collectionsService.search.subscribe(res => {
       this.search(res);
@@ -63,20 +91,36 @@ export class CollectionsComponent implements OnInit {
       this.loadData();
     });
 
+
   }
 
   public loadData() {
-    this.collectionsService
-      .getAllOwnedCollection()
+    from(this.storage.get('user'))
+      .pipe(
+        switchMap(user => {
+          this.user = user;
+          // tslint:disable-next-line:triple-equals
+          if (user.id == 0) {
+            this.collections = [];
+            this.originalCollections = [];
+            return of([]);
+          } else {
+            return this.collectionsService
+              .getAllOwnedCollection();
+          }
+        })
+      )
       .subscribe((res: { collections: CollectionInterface[] }) => {
         this.collections = res.collections;
         this.originalCollections = res.collections;
       });
 
+
     from(this.storage.get('user'))
       .pipe(
         switchMap(user => {
           this.user = user;
+          console.log(this.user);
           return from(this.storage.get('urls'));
         }),
         map((res) => {

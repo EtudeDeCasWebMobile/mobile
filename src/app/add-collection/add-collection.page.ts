@@ -4,9 +4,10 @@ import {CollectionsService} from '../services/collections.service';
 import {catchError, switchMap} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
 import {from, throwError} from 'rxjs';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Storage} from '@ionic/storage';
 import {Geojson} from 'geojson-parser-js';
+import {AuthService} from '../services/auth.service';
 
 
 const {Toast, Modals} = Plugins;
@@ -23,8 +24,16 @@ export class AddCollectionPage implements OnInit {
   constructor(
     private readonly collectionsService: CollectionsService,
     private readonly router: Router,
-    private readonly storage: Storage
+    private readonly storage: Storage,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly authService: AuthService
   ) {
+    this.activatedRoute.queryParams
+      .pipe(
+        switchMap(res => this.authService.getCurrentUser())
+      ).subscribe(res => {
+      this.user = res;
+    });
   }
 
   ngOnInit() {

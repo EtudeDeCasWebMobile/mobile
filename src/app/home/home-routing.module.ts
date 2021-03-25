@@ -5,6 +5,7 @@ import {HomePage} from './home.page';
 import {LocationsComponent} from './components/locations/locations.component';
 import {CollectionsComponent} from './components/collections/collections.component';
 import {AuthGuard} from '../guards/auth.guard';
+import {AnonymousGuard} from '../guards/anonymous.guard';
 
 const routes: Routes = [
   {
@@ -14,7 +15,8 @@ const routes: Routes = [
     children: [
       {
         path: 'locations',
-        component: LocationsComponent
+        component: LocationsComponent,
+        canActivate: [AnonymousGuard]
       }, {
         path: 'collections',
         component: CollectionsComponent

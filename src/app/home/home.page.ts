@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {CollectionsService} from '../services/collections.service';
 import {LocationsService} from '../services/locations.service';
+import {AuthService} from '../services/auth.service';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -14,11 +16,14 @@ export class HomePage implements OnInit {
   public isLocation: boolean;
   public isCollection: boolean;
   public isfilterShown = false;
+  public user;
 
   constructor(
     private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
     private readonly collectionsService: CollectionsService,
-    private readonly locationsService: LocationsService
+    private readonly locationsService: LocationsService,
+    private readonly authService: AuthService
   ) {
 
     if (router.url.trim().includes('/home/collections')) {
@@ -28,9 +33,19 @@ export class HomePage implements OnInit {
       this.isCollection = false;
       this.isLocation = true;
     }
+
+    this.activatedRoute.queryParams
+      .pipe(
+        switchMap(res => this.authService.getCurrentUser())
+      ).subscribe(res => {
+      this.user = res;
+    });
   }
 
-  ngOnInit() {
+  public ngOnInit() {
+    this.authService.getCurrentUser().subscribe(res => {
+      this.user = res;
+    });
   }
 
   searchLocationOrCollection() {

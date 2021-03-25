@@ -2,9 +2,12 @@
   <div class="filter-container" fxLayoutGap="1em" fxLayoutAlign="center center" fxLayout="row" [fxShow]="isFilterShown">
 
 
-    <div *ngFor="let filter of filters" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-      <ion-checkbox slot="start" color="secondary" [(ngModel)]="filter.checked"></ion-checkbox>
-      <ion-label (click)="filter.checked=!filter.checked" style="color:white">{{filter.title}}</ion-label>
+    <div *ngFor="let filter of filters;let index = index" fxLayout="row" fxLayoutAlign="center center"
+         fxLayoutGap="5px">
+      <ion-checkbox slot="start" color="secondary"
+                    [(ngModel)]="filter.checked"></ion-checkbox>
+      <ion-label (click)="filter.checked=!filter.checked"
+                 style="color:white">{{filter.title}}</ion-label>
     </div>
 
   </div>
@@ -20,7 +23,8 @@
     </div>
 
     <ion-virtual-scroll [fxShow]="filters[0].checked" [items]="collections" approxItemHeight="72px">
-      <div (click)="viewCollection(collection)" (press)="showPopup($event,collection)" *virtualItem="let collection;" class="list-item ion-activatable ripple-parent" fxLayout="row" fxLayoutAlign="start center"
+      <div (click)="viewCollection(collection)" (press)="showPopup($event,collection)" *virtualItem="let collection;"
+           class="list-item ion-activatable ripple-parent" fxLayout="row" fxLayoutAlign="start center"
            fxLayoutGap="1em">
         <div class="item-img-container">
           <ion-icon name="bookmark" class="tag-icon"></ion-icon>
@@ -39,7 +43,8 @@
     </ion-virtual-scroll>
 
     <ion-virtual-scroll [fxShow]="filters[1].checked" [items]="sharedCollections" approxItemHeight="72px">
-      <div (press)="showPopup($event,collection)" (click)="viewCollection(collection,true)" *virtualItem="let collection;" class="list-item" fxLayout="row" fxLayoutAlign="start center"
+      <div (press)="showPopup($event,collection)" (click)="viewCollection(collection,true)"
+           *virtualItem="let collection;" class="list-item" fxLayout="row" fxLayoutAlign="start center"
            fxLayoutGap="1em">
         <div class="item-img-container">
           <ion-icon name="bookmark" class="tag-icon"></ion-icon>

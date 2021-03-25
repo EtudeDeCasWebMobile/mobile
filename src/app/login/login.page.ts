@@ -103,11 +103,70 @@ export class LoginPage implements OnInit, OnDestroy {
   }
 
   public async loginAsAnonymous() {
-    const {value} = await Modals.prompt({
+    const {value, cancelled} = await Modals.prompt({
       title: 'Anonymous login',
-      message: 'Enter a token'
+      message: 'Enter url'
     });
-    console.log(value);
+
+    if (!!value && !cancelled) {
+      let token;
+      let url;
+      try {
+        url = new URL(value);
+        console.log(url)
+        token = url.searchParams.get('token');
+      } catch (e) {
+        console.error(e);
+      }
+
+      if (!!token) {
+        let valid = true;
+        try {
+          this.jwtHelperService.decodeToken(token);
+          valid = !this.jwtHelperService.isTokenExpired(token);
+        } catch (e) {
+          console.error(e);
+          valid = false;
+        }
+        if (!valid) {
+          Toast.show({
+            text: `Expired link`,
+            position: 'bottom',
+            duration: 'long'
+          });
+        } else {
+          console.log(token);
+          this.storage.set('user', {
+            authToken: token,
+            email: 'Anonymous',
+            id: 0,
+            sharePosition: false
+          });
+          let storageUrls = await this.storage.get('urls') as any[];
+          if (!storageUrls) {
+            storageUrls = [];
+          }
+
+          storageUrls = storageUrls.filter(elm => elm.id !== 0);
+          storageUrls.push({
+            id: 0,
+            urls: [value]
+          });
+
+          await this.storage.set('urls', storageUrls);
+
+          this.router.navigateByUrl(`/home`); // redirect to show locations pages
+        }
+      } else {
+        Toast.show({
+          duration: 'long',
+          position: 'bottom',
+          text: `Invalid url`
+        });
+      }
+
+    }
+
   }
 
   ngOnDestroy(): void {

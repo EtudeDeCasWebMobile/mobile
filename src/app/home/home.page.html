@@ -22,20 +22,22 @@
   <ion-tabs>
     <ion-tab-bar slot="top" class="tabs" color="primary">
 
-      <ion-tab-button tab="locations" (click)="isCollection=false;isLocation=true">
+      <ion-tab-button [fxHide]="user?.id ==0" tab="locations" (click)="isCollection=false;isLocation=true">
         <ion-title>
           <span class="tab-title">Locations</span>
         </ion-title>
       </ion-tab-button>
 
-      <ion-tab-button tab="collections" (click)="isCollection=true;isLocation=false">
+      <ion-tab-button [ngClass]="{'w100':user?.id == 0}" tab="collections"
+                      (click)="isCollection=true;isLocation=false">
         <ion-title>
           <span class="tab-title">Collections</span>
         </ion-title>
       </ion-tab-button>
 
-      <ion-button class="filter-btn" [ngClass]="{'disable-button':!isCollection}" (click)="showFilter()">
-        <ion-icon [fxShow]="isCollection"  name="options-outline"></ion-icon>
+      <ion-button [fxHide]="user?.id == 0" class="filter-btn" [ngClass]="{'disable-button':!isCollection}"
+                  (click)="showFilter()">
+        <ion-icon [fxShow]="isCollection" name="options-outline"></ion-icon>
       </ion-button>
 
     </ion-tab-bar>
