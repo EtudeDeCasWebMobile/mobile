@@ -125,8 +125,9 @@ export class CollectionsComponent implements OnInit {
         }),
         map((res) => {
           let temp;
-          res.map((val) => {
-            if (val.id === this.user.id) {
+
+          res?.map((val) => {
+            if (val?.id === this.user?.id) {
               temp = val;
             }
           });
@@ -137,7 +138,7 @@ export class CollectionsComponent implements OnInit {
         }),
         switchMap(res => {
           const arr = [];
-          res.urls.map(r => {
+          res?.urls?.map(r => {
             arr.push(
               this.collectionsService.findSharedCollection(r)
                 .pipe(catchError(err => of(undefined)))

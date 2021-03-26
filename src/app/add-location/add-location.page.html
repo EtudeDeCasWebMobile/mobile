@@ -1,9 +1,84 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>add-location</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <span fxLayout="row nowrap" fxLayoutAlign="start center" fxLayoutGap="7px">
+        <ion-icon style="font-size:24px" name="bookmark"></ion-icon>
+        <span translate>Add new location</span>
+      </span>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <div fxLayout="column">
 
+    <div class="map"
+         leaflet
+         [leafletOptions]="options"
+         [leafletLayers]="layers"
+         (leafletClick)="markLocation($event)"
+         (leafletMapReady)="onMapReady($event)"
+    ></div>
+    <leaflet-fullscreen-control
+      [map]="map"
+      [options]="fullscreenOptions"
+    ></leaflet-fullscreen-control>
+
+    <form [formGroup]="locationForm" (ngSubmit)="createLocation()"
+          fxLayout="column" fxLayoutAlign="start stretch"
+          fxLayoutGap="2px"
+          class="form-container"
+    >
+
+      <ion-item class="ion-item" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1em">
+        <ion-label>
+          <ion-icon class="icon" name="bookmark-outline"></ion-icon>
+        </ion-label>
+        <ion-input class="text" type="text" clearInput placeholder="Title"></ion-input>
+      </ion-item>
+
+      <ion-item class="ion-item" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1em">
+        <ion-label>
+          <ion-icon class="icon" name="image-outline"></ion-icon>
+        </ion-label>
+        <ion-input
+            #inputPic
+            (click)="fileInput.click()"
+            class="text" type="text"
+            clearInput placeholder="Add picture" readonly>
+        </ion-input>
+        <input type="file" [hidden]="true"
+               accept="image/*"
+               #fileInput (change)="onFileChange($event,inputPic)">
+      </ion-item>
+
+      <ion-item class="ion-item" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1em">
+        <ion-label>
+          <ion-icon class="icon" name="bookmark-outline"></ion-icon>
+        </ion-label>
+        <ion-input
+            #inputPic
+            (click)="selectTags()"
+            class="text" type="text"
+            clearInput placeholder="Select tags" readonly>
+        </ion-input>
+      </ion-item>
+
+      <ion-item class="ion-item" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1em">
+        <ion-label>
+          <ion-icon class="icon" name="clipboard-outline"></ion-icon>
+        </ion-label>
+        <ion-textarea class="text" rows="4" placeholder="Enter location description..."></ion-textarea>
+      </ion-item>
+
+      <ion-button [disabled]="locationForm.invalid" expand="block" type="submit" class="create-button" color="primary">
+        <span translate>Save</span>
+      </ion-button>
+
+    </form>
+
+  </div>
 </ion-content>

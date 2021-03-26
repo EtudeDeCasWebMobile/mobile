@@ -18,6 +18,7 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 import {LoadingBarModule} from '@ngx-loading-bar/core';
 import {LoadingBarHttpClientModule} from '@ngx-loading-bar/http-client';
 import {SharedModule} from './shared/shared.module';
+import {NgxLeafletFullscreenModule} from '@runette/ngx-leaflet-fullscreen';
 
 export class MyHammerConfig extends HammerGestureConfig {
   buildHammer(element: HTMLElement) {
@@ -37,6 +38,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     IonicStorageModule.forRoot(),
     AppRoutingModule,
     LeafletModule,
+    NgxLeafletFullscreenModule,
     SharedModule,
     CustomFormsModule,
     HttpClientModule,

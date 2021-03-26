@@ -58,7 +58,7 @@ export class LoginPage implements OnInit, OnDestroy {
         .pipe(
           catchError((err) => {
             if (err instanceof HttpErrorResponse) {
-              if (err.status === 400) {
+              if (err.status === 401 || err.status === 400) {
                 Toast.show({
                   text: `Wrong email or password`,
                   duration: 'long',

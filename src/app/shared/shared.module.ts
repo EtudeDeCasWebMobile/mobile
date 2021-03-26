@@ -4,6 +4,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
+import {NgxLeafletFullscreenModule} from '@runette/ngx-leaflet-fullscreen';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import {LeafletModule} from '@asymmetrik/ngx-leaflet';
     ReactiveFormsModule,
     FlexLayoutModule,
     IonicModule,
+    NgxLeafletFullscreenModule,
   ],
   exports: [
     CommonModule,
@@ -23,6 +25,7 @@ import {LeafletModule} from '@asymmetrik/ngx-leaflet';
     ReactiveFormsModule,
     FlexLayoutModule,
     IonicModule,
+    NgxLeafletFullscreenModule,
   ]
 })
 export class SharedModule {

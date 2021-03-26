@@ -3,6 +3,11 @@ import {LocationInterface} from '../../../models/location.interface';
 import {LocationsService} from '../../../services/locations.service';
 // @ts-ignore
 import FuzzySearch from 'fuzzy-search';
+import {switchMap} from 'rxjs/operators';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ModalController, Platform, PopoverController} from '@ionic/angular';
+import {Storage} from '@ionic/storage';
+import {AuthService} from '../../../services/auth.service';
 
 
 @Component({
@@ -14,60 +19,30 @@ import FuzzySearch from 'fuzzy-search';
 export class LocationsComponent implements OnInit {
   public locations: LocationInterface[] = [];
   public originalLocations: LocationInterface[] = [];
+  public user;
 
   constructor(
-    private readonly locationsService: LocationsService
+    private readonly locationsService: LocationsService,
+    private readonly router: Router,
+    private readonly platform: Platform,
+    private readonly popoverController: PopoverController,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly storage: Storage,
+    private readonly modalController: ModalController,
+    private readonly authService: AuthService
   ) {
+    this.activatedRoute.queryParams
+      .pipe(
+        switchMap(res => this.authService.getCurrentUser())
+      )
+      .subscribe(res => {
+        this.user = res;
+        this.loadData();
+      });
   }
 
   ngOnInit() {
-    this.locations = [
-      {
-        image: '',
-        title: 'titre1',
-        description: 'description1',
-        coordinate: {
-          lat: 0, lon: 0
-        },
-        tags: ['']
-      },
-      {
-        image: '',
-        title: 'titre2',
-        description: 'description2',
-        coordinate: {
-          lat: 0, lon: 0
-        },
-        tags: ['']
-      },
-      {
-        image: '',
-        title: 'titre3',
-        description: 'description3',
-        coordinate: {
-          lat: 0, lon: 0
-        },
-        tags: ['']
-      },
-      {
-        image: '',
-        title: 'titre4',
-        description: 'description4',
-        coordinate: {
-          lat: 0, lon: 0
-        },
-        tags: ['']
-      },
-      {
-        image: '',
-        title: 'titre5',
-        description: 'description5',
-        coordinate: {
-          lat: 0, lon: 0
-        },
-        tags: ['']
-      }
-    ];
+    this.locations = [];
     this.originalLocations = this.locations;
 
     this.locationsService.search.subscribe(res => {
@@ -75,12 +50,19 @@ export class LocationsComponent implements OnInit {
     });
   }
 
+  private loadData(): void {
+    this.locationsService.getAllOwnLocations()
+      .subscribe(res => {
+        console.log(res.locations);
+        this.locations = res.locations;
+      });
+  }
+
   /**
    * addLocation
    */
   public addLocation() {
-    console.log('adding location');
-
+    this.router.navigateByUrl('/add-location');
   }
 
   private search(res: string) {
@@ -95,7 +77,7 @@ export class LocationsComponent implements OnInit {
   }
 
   pullToRefresh($event: any) {
-    // this.locations=[];
+    this.loadData();
     $event.target.complete();
 
   }

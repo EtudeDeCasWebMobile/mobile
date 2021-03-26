@@ -9,7 +9,7 @@ const routes: Routes = [
   {
     path: '',
     component: AddLocationPage,
-    canActivate: [AuthGuard,AnonymousGuard]
+    canActivate: [AuthGuard, AnonymousGuard]
   }
 ];
 
