@@ -42,6 +42,14 @@
               <span translate>Settings</span>
             </ion-label>
           </ion-item>
+
+          <ion-item [fxHide]="!(isAuthenticated)" button lines="full" (click)="sharePosition()">
+            <ion-icon class="white-icon" slot="start" name="share-social-outline"></ion-icon>
+            <ion-label>
+              <span translate>Share Position</span>
+            </ion-label>
+          </ion-item>
+
         </div>
 
         <div fxLayout="column">

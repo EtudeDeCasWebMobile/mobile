@@ -15,7 +15,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {JwtInterceptor} from './services/jwt.interceptor';
 import {JwtHelperService} from '@auth0/angular-jwt';
 
-import {LoadingBarModule} from '@ngx-loading-bar/core';
+import {LOADING_BAR_CONFIG, LoadingBarModule} from '@ngx-loading-bar/core';
 import {LoadingBarHttpClientModule} from '@ngx-loading-bar/http-client';
 import {SharedModule} from './shared/shared.module';
 import {NgxLeafletFullscreenModule} from '@runette/ngx-leaflet-fullscreen';
@@ -51,7 +51,8 @@ export class MyHammerConfig extends HammerGestureConfig {
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: JwtHelperService, useValue: new JwtHelperService()},
-    {provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig}
+    {provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig},
+    {provide: LOADING_BAR_CONFIG, useValue: {latencyThreshold: 300}}
 
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

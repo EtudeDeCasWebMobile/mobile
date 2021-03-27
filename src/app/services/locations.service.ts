@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {from, Observable, Subject} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpRequest} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {switchMap} from 'rxjs/operators';
 import {environment} from '../../environments';
@@ -47,6 +47,18 @@ export class LocationsService {
       );
   }
 
+  public deleteLocationFromCollection(id: number, tag: string) {
+
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          const req = new HttpRequest('DELETE', `${environment.url}${url}/locations/${id}/collections`);
+          const newReq = req.clone({body: {tag}});
+          return this.httpClient.request(newReq);
+        })
+      );
+  }
+
   // not implemented in backend yet
   public findLocations(id: number) {
     return from(this.storage.get('server'))
@@ -62,6 +74,24 @@ export class LocationsService {
       .pipe(
         switchMap(url => {
           return this.httpClient.put(`${environment.url}${url}/locations/${id}`, location);
+        })
+      );
+  }
+
+  public updatePosition(id: number, position: {longitude: number, latitude: number}) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          return this.httpClient.put(`${environment.url}${url}/users/${id}/position`, position);
+        })
+      );
+  }
+
+  public sharePosition(id: number) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          return this.httpClient.post(`${environment.url}${url}/users/${id}/position/share`,{});
         })
       );
   }

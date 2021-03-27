@@ -6,10 +6,14 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {throwError} from 'rxjs';
 import {Plugins} from '@capacitor/core';
 import {CollectionInterface} from '../models/collection.interface';
-import {AlertController, ModalController} from '@ionic/angular';
+import {AlertController, ModalController, Platform, PopoverController} from '@ionic/angular';
 import {AddLocationComponent} from './component/add-location/add-location.component';
+import {LocationActionComponent} from './component/location-action/location-action.component';
+import {Storage} from '@ionic/storage';
+import {AuthService} from '../services/auth.service';
+import {LocationsService} from '../services/locations.service';
 
-const {Toast, Modals, Clipboard} = Plugins;
+const {Toast, Modals, Clipboard, Haptics} = Plugins;
 
 @Component({
   selector: 'app-edit-collection',
@@ -25,7 +29,12 @@ export class EditCollectionPage implements OnInit {
     private readonly activatedRoute: ActivatedRoute,
     private readonly collectionsService: CollectionsService,
     private readonly alertController: AlertController,
-    private readonly modalController: ModalController
+    private readonly modalController: ModalController,
+    private readonly platform: Platform,
+    private readonly popoverController: PopoverController,
+    private readonly storage: Storage,
+    private readonly authService: AuthService,
+    private readonly locationsService: LocationsService
   ) {
   }
 
@@ -197,5 +206,81 @@ export class EditCollectionPage implements OnInit {
     });
     return await modal.present();
   }
+
+
+  public async showPopup($event, location: any) {
+    const popover = await this.popoverController.create({
+      component: LocationActionComponent,
+      event
+    });
+    if (this.platform.is('capacitor')) {
+      Haptics.vibrate();
+    } else {
+      await navigator.vibrate(150);
+    }
+    await popover.present();
+    const {data} = await popover.onDidDismiss();
+    if (data === `delete`) {
+      await this.delete(location);
+    } else if (data === 'view') {
+      console.log('view');
+      /*this.router.navigate([`/edit-location/${location.id}`], {
+        state: location
+      });*/
+    }
+  }
+
+  onImgError($event) {
+    $event.target.src = '/assets/images/no-image.webp';
+  }
+
+  private async delete(location: any) {
+    const confirmRet = await Modals.confirm({
+      title: 'Confirmation',
+      message: `Are you sure you want to delete '${location.title}'`,
+      cancelButtonTitle: `Cancel`,
+      okButtonTitle: `Delete`
+    });
+    if (confirmRet.value) {
+      console.log('delete');
+      this.locationsService.deleteLocationFromCollection(location.id, this.collection.tag)
+        .pipe(
+          catchError((err) => {
+            if (err instanceof HttpErrorResponse && err.status === 403) {
+              Toast.show({
+                position: 'bottom',
+                text: `Only owner of the location can remove it`
+              });
+            } else {
+              Toast.show({
+                position: 'bottom',
+                text: `An error occured, try again`
+              });
+            }
+            return throwError(err);
+          })
+        )
+        .subscribe(result => {
+          console.log(result);
+
+          this.collection.locations = this.collection.locations.filter(res => res.id !== location.id);
+
+          Toast.show({
+            text: `${location.title} have been successfully deleted`,
+            duration: 'long',
+            position: 'bottom'
+          });
+
+        });
+    }
+  }
+
+  public viewLocation(location: any) {
+    console.log('view');
+    /*this.router.navigate([`/edit-location/${location.id}`], {
+      state: location
+    });*/
+  }
+
 
 }

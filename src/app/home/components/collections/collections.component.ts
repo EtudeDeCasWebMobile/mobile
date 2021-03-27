@@ -174,9 +174,9 @@ export class CollectionsComponent implements OnInit {
     this.sharedCollections = searcherShared.search(res);
   }
 
-  pullToRefresh($event: any) {
+  pullToRefresh(event: any) {
     this.loadData();
-    $event.target.complete();
+    event.target.complete();
   }
 
   async showPopup(event, collection: any) {

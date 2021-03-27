@@ -1,15 +1,16 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {from, interval, of} from 'rxjs';
+import {from, interval, of, throwError} from 'rxjs';
 import {Storage} from '@ionic/storage';
 import {AlertController, MenuController} from '@ionic/angular';
 import {Plugins} from '@capacitor/core';
 import {Router} from '@angular/router';
 import {AuthService} from './services/auth.service';
-import {distinctUntilChanged, switchMap} from 'rxjs/operators';
+import {catchError, distinctUntilChanged, switchMap} from 'rxjs/operators';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {JwtHelperService} from '@auth0/angular-jwt';
+import {LocationsService} from './services/locations.service';
 
-const {Modals, Geolocation, Toast} = Plugins;
+const {Modals, Geolocation, Toast, Clipboard} = Plugins;
 
 @AutoUnsubscribe()
 @Component({
@@ -28,7 +29,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly menuController: MenuController,
     private readonly authService: AuthService,
-    private readonly jwtHelperService: JwtHelperService
+    private readonly jwtHelperService: JwtHelperService,
+    private readonly locationsService: LocationsService
   ) {
   }
 
@@ -57,7 +59,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       });
 
-    interval(1000)
+    interval(1000 * 60 * 2)
       .pipe(
         switchMap(res => this.authService.getCurrentUser()),
         switchMap(res => {
@@ -69,8 +71,10 @@ export class AppComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         switchMap(res => {
           if (!!res) {
-            console.log('coords = ', res);
-            // call api
+            return this.locationsService.updatePosition(this.user.id, {
+              latitude: res.coords.latitude,
+              longitude: res.coords.longitude
+            });
           }
           return of(res);
         })
@@ -85,7 +89,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     const promptRet = await Modals.prompt({
       title: 'Add a server',
-      inputPlaceholder: 'www.server.com',
+      inputPlaceholder: 'http://www.server.com',
       okButtonTitle: 'Save',
       message: `Add a server URL/IP address`
     });
@@ -105,10 +109,54 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
   }
 
-  logout() {
+  public logout() {
     this.menuController.close();
     this.authService.logout();
     this.router.navigateByUrl('/login');
+  }
+
+  public sharePosition() {
+    this.locationsService.sharePosition(this.user.id)
+      .pipe(
+        catchError((err) => {
+          Toast.show({
+            position: 'bottom',
+            text: `An error occured, try again`
+          });
+          return throwError(err);
+        })
+      )
+      .subscribe(async (res: any) => {
+        console.log(`${res.link}?token=${res.token}`);
+        const alert = await this.alertController.create({
+          cssClass: 'my-custom-class',
+          header: 'Shared link',
+          inputs: [
+            {
+              name: 'token',
+              type: 'text',
+              id: 'token',
+              value: `${res.link}?token=${res.token}`,
+              attributes: {readonly: true}
+            }
+          ],
+          buttons: [
+            {
+              text: 'Copy',
+              handler: () => {
+                Clipboard.write({string: `${res.link}?token=${res.token}`});
+                Toast.show({
+                  duration: 'short',
+                  position: 'bottom',
+                  text: 'Link have been copied'
+                });
+              }
+            }
+          ]
+        });
+
+        await alert.present();
+      });
   }
 
 }

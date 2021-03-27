@@ -41,6 +41,7 @@ export class EditLocationPage implements OnInit, AfterViewInit {
     title: 'View Fullscreen',
     titleCancel: 'Exit Fullscreen',
   };
+  public center = latLng([46.879966, -121.726909]);
 
   constructor(
     private readonly router: Router,
@@ -62,14 +63,15 @@ export class EditLocationPage implements OnInit, AfterViewInit {
         this.router.navigateByUrl('/home/locations');
       }
       this.locationForm.patchValue({
-        title: this.location.title,
-        tags: this.location.tags,
-        description: this.location.description,
+        title: this.location?.title,
+        tags: this.location?.tags,
+        description: this.location?.description,
         image: this.location?.image || '',
-        latitude: this.location.latitude,
-        longitude: this.location.longitude
+        latitude: this.location?.latitude,
+        longitude: this.location?.longitude
       });
 
+      this.center = latLng([this.location.latitude, this.location.longitude]);
       this.layers = [
         marker([this.location.latitude, this.location.longitude], {
           icon: icon({

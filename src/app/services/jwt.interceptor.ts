@@ -1,15 +1,19 @@
 import {Injectable, Injector} from '@angular/core';
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {from, Observable} from 'rxjs';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {from, Observable, throwError} from 'rxjs';
 import {Storage} from '@ionic/storage';
-import {switchMap} from 'rxjs/operators';
+import {catchError, switchMap} from 'rxjs/operators';
 import {JwtHelperService} from '@auth0/angular-jwt';
+import {AuthService} from './auth.service';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
   constructor(
     private injector: Injector,
-    private readonly jwtHelperService: JwtHelperService
+    private readonly jwtHelperService: JwtHelperService,
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {
   }
 
@@ -24,7 +28,17 @@ export class JwtInterceptor implements HttpInterceptor {
             }
           });
         }
-        return next.handle(request);
+        return next.handle(request)
+          .pipe(
+            catchError((errors) => {
+              if (errors instanceof HttpErrorResponse && errors.status === 401) {
+                this.authService.logout();
+                this.router.navigateByUrl(`/`);
+              }
+              return throwError(errors);
+            })
+          );
+
       }));
 
   }

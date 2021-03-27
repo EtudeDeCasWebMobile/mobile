@@ -74,7 +74,7 @@ export class LocationsComponent implements OnInit {
   private search(res: string) {
     console.log(res);
     this.locations = this.originalLocations;
-    const searcher = new FuzzySearch(this.originalLocations, ['title','tags']);
+    const searcher = new FuzzySearch(this.originalLocations, ['title', 'tags', 'description']);
     this.locations = searcher.search(res);
   }
 
