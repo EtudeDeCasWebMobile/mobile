@@ -11,7 +11,10 @@
     </div>
 
     <ion-virtual-scroll [items]="locations" approxItemHeight="100px">
-      <div *virtualItem="let location;" class="list-item" fxLayout="row" fxLayoutGap="1em">
+      <div *virtualItem="let location;"
+           (click)="viewLocation(location)"
+           (press)="showPopup($event,location)"
+           class="list-item ion-activatable ripple-parent" fxLayout="row" fxLayoutGap="1em">
         <div class="item-img-container">
           <img (error)="onImgError($event)" class="item-img" [src]="location.image" alt="" width="100px" height="100px">
         </div>
@@ -24,10 +27,13 @@
           </div>
           <div class="item-description">
             <span>
-              {{ location.description }}
+              {{ location.description?.substr(0,127) }}...
             </span>
           </div>
         </div>
+
+        <ion-ripple-effect></ion-ripple-effect>
+
       </div>
     </ion-virtual-scroll>
 

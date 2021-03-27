@@ -28,13 +28,17 @@ const routes: Routes = [
   },
   {
     path: 'edit-collection/:id',
-    loadChildren: () => import('./edit-collection/edit-collection.module').then( m => m.EditCollectionPageModule)
+    loadChildren: () => import('./edit-collection/edit-collection.module').then(m => m.EditCollectionPageModule)
+  },
+  {
+    path: 'edit-location/:id',
+    loadChildren: () => import('./edit-location/edit-location.module').then(m => m.EditLocationPageModule)
   },
   {
     path: '**',
     redirectTo: 'login',
     pathMatch: 'full'
-  }
+  },
 
 
 ];

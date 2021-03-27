@@ -3,12 +3,17 @@ import {LocationInterface} from '../../../models/location.interface';
 import {LocationsService} from '../../../services/locations.service';
 // @ts-ignore
 import FuzzySearch from 'fuzzy-search';
-import {switchMap} from 'rxjs/operators';
+import {catchError, switchMap} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ModalController, Platform, PopoverController} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
 import {AuthService} from '../../../services/auth.service';
+import {LocationActionComponent} from './components/location-action/location-action.component';
+import {Plugins} from '@capacitor/core';
+import {HttpErrorResponse} from '@angular/common/http';
+import {throwError} from 'rxjs';
 
+const {Toast, Haptics, Modals} = Plugins;
 
 @Component({
   selector: 'app-locations',
@@ -55,6 +60,7 @@ export class LocationsComponent implements OnInit {
       .subscribe(res => {
         console.log(res.locations);
         this.locations = res.locations;
+        this.originalLocations = res.locations;
       });
   }
 
@@ -68,7 +74,7 @@ export class LocationsComponent implements OnInit {
   private search(res: string) {
     console.log(res);
     this.locations = this.originalLocations;
-    const searcher = new FuzzySearch(this.originalLocations, ['title', 'tags']);
+    const searcher = new FuzzySearch(this.originalLocations, ['title','tags']);
     this.locations = searcher.search(res);
   }
 
@@ -80,6 +86,75 @@ export class LocationsComponent implements OnInit {
     this.loadData();
     $event.target.complete();
 
+  }
+
+  public async showPopup(event, location: any) {
+    const popover = await this.popoverController.create({
+      component: LocationActionComponent,
+      event
+    });
+    if (this.platform.is('capacitor')) {
+      Haptics.vibrate();
+    } else {
+      await navigator.vibrate(150);
+    }
+    await popover.present();
+    const {data} = await popover.onDidDismiss();
+    if (data === `delete`) {
+      await this.delete(location);
+    } else if (data === 'edit') {
+      console.log('edit');
+      this.router.navigate([`/edit-location/${location.id}`], {
+        state: location
+      });
+    }
+  }
+
+
+  private async delete(location: any) {
+    const confirmRet = await Modals.confirm({
+      title: 'Confirmation',
+      message: `Are you sure you want to delete '${location.title}'`,
+      cancelButtonTitle: `Cancel`,
+      okButtonTitle: `Delete`
+    });
+    if (confirmRet.value) {
+      console.log('delete');
+      this.locationsService.deleteLocations(location.id)
+        .pipe(
+          catchError((err) => {
+            if (err instanceof HttpErrorResponse && err.status === 403) {
+              Toast.show({
+                position: 'bottom',
+                text: `Only owner of the location can delete it`
+              });
+            } else {
+              Toast.show({
+                position: 'bottom',
+                text: `An error occured, try again`
+              });
+            }
+            return throwError(err);
+          })
+        )
+        .subscribe(result => {
+          console.log(result);
+          this.loadData();
+
+          Toast.show({
+            text: `${location.title} have been successfully deleted`,
+            duration: 'long',
+            position: 'bottom'
+          });
+
+        });
+    }
+  }
+
+  public viewLocation(location: any) {
+    this.router.navigate([`/edit-location/${location.id}`], {
+      state: location
+    });
   }
 
 }

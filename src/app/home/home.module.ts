@@ -7,6 +7,7 @@ import {SharedModule} from '../shared/shared.module';
 import {CollectionsComponent} from './components/collections/collections.component';
 import {LocationsComponent} from './components/locations/locations.component';
 import {CollectionActionComponent} from './components/collections/components/collection-action/collection-action.component';
+import {LocationActionComponent} from './components/locations/components/location-action/location-action.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import {CollectionActionComponent} from './components/collections/components/col
     HomePage,
     CollectionsComponent,
     LocationsComponent,
-    CollectionActionComponent
+    CollectionActionComponent,
+    LocationActionComponent
   ]
 })
 export class HomePageModule {

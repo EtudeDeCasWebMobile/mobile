@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {CollectionsService} from '../../services/collections.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -10,6 +10,8 @@ import {map, switchMap} from 'rxjs/operators';
   styleUrls: ['./select-tags.component.scss'],
 })
 export class SelectTagsComponent implements OnInit {
+
+  @Input() location;
 
   public collections: any[] = [];
 
@@ -33,8 +35,9 @@ export class SelectTagsComponent implements OnInit {
         })
       )
       .subscribe((res: any) => {
+        console.log(this.location);
         this.collections = res.collections;
-        console.log(this.collections);
+        // console.log(this.collections);
       });
   }
 

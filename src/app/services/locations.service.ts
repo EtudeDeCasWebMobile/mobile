@@ -29,4 +29,42 @@ export class LocationsService {
       );
   }
 
+  public createOwnLocations(location: Partial<LocationInterface>) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          return this.httpClient.post(`${environment.url}${url}/me/locations`, location);
+        })
+      );
+  }
+
+  public deleteLocations(id: number) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          return this.httpClient.delete(`${environment.url}${url}/locations/${id}`);
+        })
+      );
+  }
+
+  // not implemented in backend yet
+  public findLocations(id: number) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          return this.httpClient.get(`${environment.url}${url}/locations/${id}`);
+        })
+      );
+  }
+
+  public updateLocations(id: number, location: Partial<LocationInterface>) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          return this.httpClient.put(`${environment.url}${url}/locations/${id}`, location);
+        })
+      );
+  }
+
+
 }

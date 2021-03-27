@@ -1,26 +1,25 @@
-/// <reference types='@runette/leaflet-fullscreen' />
-
 import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {AlertController, IonInput, ModalController} from '@ionic/angular';
-import {LocationsService} from '../services/locations.service';
-import {icon, latLng, LeafletMouseEvent, Map, marker, tileLayer} from 'leaflet';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {icon, latLng, LeafletMouseEvent, Map, marker, tileLayer} from 'leaflet';
+import {ActivatedRoute, Router} from '@angular/router';
+import {LocationsService} from '../services/locations.service';
+import {AlertController, IonInput, ModalController} from '@ionic/angular';
 import {CustomValidators} from 'ngx-custom-validators';
-import {SelectTagsComponent} from './select-tags/select-tags.component';
-import {Toast} from '@capacitor/core';
 import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
+import {Toast} from '@capacitor/core';
 import {throwError} from 'rxjs';
+import {SelectTagsComponent} from '../add-location/select-tags/select-tags.component';
 
 @Component({
-  selector: 'app-add-location',
-  templateUrl: './add-location.page.html',
-  styleUrls: ['./add-location.page.scss'],
+  selector: 'app-edit-location',
+  templateUrl: './edit-location.page.html',
+  styleUrls: ['./edit-location.page.scss'],
 })
-export class AddLocationPage implements OnInit, AfterViewInit {
+export class EditLocationPage implements OnInit, AfterViewInit {
 
   public locationForm: FormGroup;
+  public location;
   public layers = [];
   public map: Map;
   public collectionsStrings: string;
@@ -52,9 +51,37 @@ export class AddLocationPage implements OnInit, AfterViewInit {
     private readonly fb: FormBuilder
   ) {
     this.initForm();
+
   }
 
   ngOnInit() {
+    this.activatedRoute.queryParams.subscribe(res => {
+      this.location = this.router.getCurrentNavigation().extras.state;
+      console.log(this.location);
+      if (!this.location) {
+        this.router.navigateByUrl('/home/locations');
+      }
+      this.locationForm.patchValue({
+        title: this.location.title,
+        tags: this.location.tags,
+        description: this.location.description,
+        image: this.location?.image || '',
+        latitude: this.location.latitude,
+        longitude: this.location.longitude
+      });
+
+      this.layers = [
+        marker([this.location.latitude, this.location.longitude], {
+          icon: icon({
+            iconSize: [25, 41],
+            iconAnchor: [13, 41],
+            iconUrl: 'leaflet/marker-icon.png',
+            shadowUrl: 'leaflet/marker-shadow.png'
+          })
+        })
+      ];
+
+    });
   }
 
   ngAfterViewInit(): void {
@@ -110,7 +137,7 @@ export class AddLocationPage implements OnInit, AfterViewInit {
     if (this.locationForm.valid) {
       const values = this.locationForm.value;
       console.log(values);
-      this.locationsService.createOwnLocations(values)
+      this.locationsService.updateLocations(this.location.id, values)
         .pipe(
           catchError((err) => {
             if (err instanceof HttpErrorResponse && err.status === 409) {
@@ -159,7 +186,7 @@ export class AddLocationPage implements OnInit, AfterViewInit {
     console.log('add location to collection');
     const modal = await this.modalController.create({
       component: SelectTagsComponent,
-      componentProps: {}
+      componentProps: {location: this.location}
     });
 
     modal.onDidDismiss().then((data: any) => {
