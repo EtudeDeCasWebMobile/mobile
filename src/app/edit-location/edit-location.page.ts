@@ -24,7 +24,6 @@ export class EditLocationPage implements OnInit, AfterViewInit {
   public map: Map;
   public collectionsStrings: string;
 
-
   public options = {
     layers: [
       tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -41,7 +40,6 @@ export class EditLocationPage implements OnInit, AfterViewInit {
     title: 'View Fullscreen',
     titleCancel: 'Exit Fullscreen',
   };
-  public center = latLng([46.879966, -121.726909]);
 
   constructor(
     private readonly router: Router,
@@ -71,9 +69,8 @@ export class EditLocationPage implements OnInit, AfterViewInit {
         longitude: this.location?.longitude
       });
 
-      this.center = latLng([this.location.latitude, this.location.longitude]);
       this.layers = [
-        marker([this.location.latitude, this.location.longitude], {
+        marker([this.location?.latitude, this.location?.longitude], {
           icon: icon({
             iconSize: [25, 41],
             iconAnchor: [13, 41],
@@ -83,6 +80,8 @@ export class EditLocationPage implements OnInit, AfterViewInit {
         })
       ];
 
+      this.options.center = latLng([this.location?.latitude, this.location?.longitude]);
+      this.options.zoom = 12;
     });
   }
 

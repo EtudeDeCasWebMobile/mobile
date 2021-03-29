@@ -204,6 +204,11 @@ export class EditCollectionPage implements OnInit {
         collection: this.collection
       }
     });
+    modal.onDidDismiss().then((data: any) => {
+      if (!!data?.data?.locations) {
+        this.collection.locations = data?.data?.locations;
+      }
+    });
     return await modal.present();
   }
 

@@ -19,7 +19,6 @@
          leaflet
          [leafletOptions]="options"
          [leafletLayers]="layers"
-         [(leafletCenter)]="center"
          (leafletClick)="markLocation($event)"
          (leafletMapReady)="onMapReady($event)"
     ></div>
@@ -54,20 +53,6 @@
         <input type="file" [hidden]="true"
                accept="image/*"
                #fileInput (change)="onFileChange($event,inputPic)">
-      </ion-item>
-
-      <ion-item class="ion-item" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1em">
-        <ion-label>
-          <ion-icon class="icon" name="bookmark-outline"></ion-icon>
-        </ion-label>
-        <ion-input
-          [(ngModel)]="collectionsStrings"
-          [ngModelOptions]="{standalone:true}"
-          #inputPic
-          (click)="selectTags()"
-          class="text" type="text"
-          clearInput placeholder="Select tags" readonly>
-        </ion-input>
       </ion-item>
 
       <ion-item class="ion-item" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1em">

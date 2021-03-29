@@ -105,7 +105,8 @@ export class LocationsComponent implements OnInit {
     } else if (data === 'edit') {
       console.log('edit');
       this.router.navigate([`/edit-location/${location.id}`], {
-        state: location
+        state: location,
+        queryParams: {update: true}
       });
     }
   }
@@ -153,7 +154,8 @@ export class LocationsComponent implements OnInit {
 
   public viewLocation(location: any) {
     this.router.navigate([`/edit-location/${location.id}`], {
-      state: location
+      state: location,
+      queryParams: {update: true}
     });
   }
 

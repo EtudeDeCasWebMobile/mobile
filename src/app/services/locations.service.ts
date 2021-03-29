@@ -78,7 +78,16 @@ export class LocationsService {
       );
   }
 
-  public updatePosition(id: number, position: {longitude: number, latitude: number}) {
+  public addTagToLocation(id: number, tag: string) {
+    return from(this.storage.get('server'))
+      .pipe(
+        switchMap(url => {
+          return this.httpClient.post(`${environment.url}${url}/locations/${id}/collections`, {tag});
+        })
+      );
+  }
+
+  public updatePosition(id: number, position: { longitude: number, latitude: number }) {
     return from(this.storage.get('server'))
       .pipe(
         switchMap(url => {
@@ -91,7 +100,7 @@ export class LocationsService {
     return from(this.storage.get('server'))
       .pipe(
         switchMap(url => {
-          return this.httpClient.post(`${environment.url}${url}/users/${id}/position/share`,{});
+          return this.httpClient.post(`${environment.url}${url}/users/${id}/position/share`, {});
         })
       );
   }
