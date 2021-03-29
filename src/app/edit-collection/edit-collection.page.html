@@ -16,6 +16,9 @@
       <ion-button (click)="editCollectionTitle()" *ngIf="!isShared">
         <ion-icon style="color:whitesmoke;font-size:24px" name="create-outline"></ion-icon>
       </ion-button>
+      <ion-button (click)="exportCollection()" >
+        <ion-icon style="color:whitesmoke;font-size:24px" name="download-outline"></ion-icon>
+      </ion-button>
       <ion-button (click)="deleteCollection()" *ngIf="!isShared">
         <ion-icon color="secondary" style="font-size:24px" name="trash-outline"></ion-icon>
       </ion-button>

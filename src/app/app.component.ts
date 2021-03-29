@@ -50,7 +50,7 @@ export class AppComponent implements OnInit, OnDestroy {
           this.authService.getCurrentUser().subscribe(user => {
             this.user = user;
             // @ts-ignore
-            this.shareLocation = user.shareLocation;
+            this.shareLocation = user?.shareLocation;
           });
         }
       });

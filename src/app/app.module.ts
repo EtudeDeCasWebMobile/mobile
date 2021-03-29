@@ -19,6 +19,7 @@ import {LOADING_BAR_CONFIG, LoadingBarModule} from '@ngx-loading-bar/core';
 import {LoadingBarHttpClientModule} from '@ngx-loading-bar/http-client';
 import {SharedModule} from './shared/shared.module';
 import {NgxLeafletFullscreenModule} from '@runette/ngx-leaflet-fullscreen';
+import {FileSaverModule} from 'ngx-filesaver';
 
 export class MyHammerConfig extends HammerGestureConfig {
   buildHammer(element: HTMLElement) {
@@ -45,6 +46,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     LoadingBarModule,
     LoadingBarHttpClientModule,
     HammerModule,
+    FileSaverModule,
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production})
   ],
   providers: [

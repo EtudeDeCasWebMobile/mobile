@@ -21,7 +21,7 @@ export class JwtInterceptor implements HttpInterceptor {
     const storage = this.injector.get(Storage);
     return from(storage.get('user')).pipe(
       switchMap(user => {
-        if (!this.jwtHelperService.isTokenExpired(user?.authToken)) {
+        if (!this.jwtHelperService.isTokenExpired(user?.authToken) && user?.id !== 0) {
           request = request.clone({
             setHeaders: {
               Authorization: `Bearer ${user?.authToken}`,

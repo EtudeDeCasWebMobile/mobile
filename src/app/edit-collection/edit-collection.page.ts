@@ -12,8 +12,9 @@ import {LocationActionComponent} from './component/location-action/location-acti
 import {Storage} from '@ionic/storage';
 import {AuthService} from '../services/auth.service';
 import {LocationsService} from '../services/locations.service';
+import {FileSaverService} from 'ngx-filesaver';
 
-const {Toast, Modals, Clipboard, Haptics} = Plugins;
+const {Toast, Modals, Clipboard, Haptics, Filesystem} = Plugins;
 
 @Component({
   selector: 'app-edit-collection',
@@ -34,7 +35,8 @@ export class EditCollectionPage implements OnInit {
     private readonly popoverController: PopoverController,
     private readonly storage: Storage,
     private readonly authService: AuthService,
-    private readonly locationsService: LocationsService
+    private readonly locationsService: LocationsService,
+    private readonly fileSaverService: FileSaverService
   ) {
   }
 
@@ -292,5 +294,50 @@ export class EditCollectionPage implements OnInit {
     });
   }
 
+
+  public async exportCollection() {
+    const geojson = {
+      type: `FeatureCollection`,
+      features: []
+    };
+    this.collection.locations.map((loc: any) => {
+      const newFeature = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          // @ts-ignore
+          coordinates: `${parseFloat(loc.latitude)}, ${parseFloat(loc.longitude)}`,
+          properties: {
+            title: loc.title,
+            description: loc.description
+          }
+        }
+      };
+      geojson.features.push(newFeature);
+
+    });
+    const geoJsonString = JSON.stringify(geojson);
+    try {
+      /*      if (this.platform.is('capacitor')) {
+              const result = await Filesystem.writeFile({
+                data: geoJsonString,
+                encoding: FilesystemEncoding.UTF8,
+                recursive: true,
+                directory: FilesystemDirectory.Documents,
+                path: `${this.collection.tag}.json`
+              });
+              console.log('Wrote file', result);
+            } else {*/
+      this.fileSaverService.saveText(geoJsonString, `${this.collection.tag}.json`);
+      //   }
+
+    } catch (e) {
+      Toast.show({
+        text: `Unable to write file`,
+        position: 'bottom',
+        duration: 'long'
+      });
+    }
+  }
 
 }

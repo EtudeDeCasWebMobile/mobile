@@ -5,6 +5,7 @@ import {IonicModule} from '@ionic/angular';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {NgxLeafletFullscreenModule} from '@runette/ngx-leaflet-fullscreen';
+import {FileSaverModule} from 'ngx-filesaver';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import {NgxLeafletFullscreenModule} from '@runette/ngx-leaflet-fullscreen';
     FlexLayoutModule,
     IonicModule,
     NgxLeafletFullscreenModule,
+    FileSaverModule
   ],
   exports: [
     CommonModule,
@@ -26,6 +28,7 @@ import {NgxLeafletFullscreenModule} from '@runette/ngx-leaflet-fullscreen';
     FlexLayoutModule,
     IonicModule,
     NgxLeafletFullscreenModule,
+    FileSaverModule
   ]
 })
 export class SharedModule {
