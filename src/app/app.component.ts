@@ -9,6 +9,7 @@ import {catchError, distinctUntilChanged, switchMap} from 'rxjs/operators';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {LocationsService} from './services/locations.service';
+import {SettingsService} from './services/settings.service';
 
 const {Modals, Geolocation, Toast, Clipboard} = Plugins;
 
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public isAuthenticated: boolean;
   public user: { authToken: string, id: number, email: string };
+  public shareLocation: boolean;
 
   constructor(
     private readonly storage: Storage,
@@ -30,7 +32,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly menuController: MenuController,
     private readonly authService: AuthService,
     private readonly jwtHelperService: JwtHelperService,
-    private readonly locationsService: LocationsService
+    private readonly locationsService: LocationsService,
+    private readonly settingsService: SettingsService
   ) {
   }
 
@@ -46,20 +49,29 @@ export class AppComponent implements OnInit, OnDestroy {
         if (this.isAuthenticated) {
           this.authService.getCurrentUser().subscribe(user => {
             this.user = user;
+            // @ts-ignore
+            this.shareLocation = user.shareLocation;
           });
         }
       });
 
+    this.settingsService.shareLocation$.subscribe(res => {
+      // @ts-ignore
+      this.shareLocation = res;
+    });
+
     from(this.storage.get('server'))
       .subscribe(async (result) => {
         if (!result) {
-          const value = await this.showPrompt();
-          console.log(value?.value);
-          await this.storage.set('server', value.value);
+          const {value, cancelled} = await this.showPrompt();
+          if (value?.trim()?.length > 0 && !cancelled) {
+            await this.storage.set('server', value);
+            console.log(value);
+          }
         }
       });
 
-    interval(1000 * 60 * 2)
+    interval(1000 * 60)
       .pipe(
         switchMap(res => this.authService.getCurrentUser()),
         switchMap(res => {

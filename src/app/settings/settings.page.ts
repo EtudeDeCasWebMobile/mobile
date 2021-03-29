@@ -5,6 +5,7 @@ import {Plugins} from '@capacitor/core';
 import {AuthService} from '../services/auth.service';
 import {from} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {SettingsService} from '../services/settings.service';
 
 const {Modals, Toast} = Plugins;
 
@@ -23,6 +24,7 @@ export class SettingsPage implements OnInit, OnDestroy {
   constructor(
     private readonly storage: Storage,
     private readonly authService: AuthService,
+    private readonly settingsService: SettingsService
   ) {
   }
 
@@ -77,6 +79,7 @@ export class SettingsPage implements OnInit, OnDestroy {
       }))
       .subscribe(res => {
         this.user = res;
+        this.settingsService.shareLocation$.next($event.detail.checked);
       });
   }
 

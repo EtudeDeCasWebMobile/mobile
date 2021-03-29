@@ -34,25 +34,25 @@
         <ion-spinner color="primary" style="width: 90px;height: 90px;"></ion-spinner>
       </div>
 
-      <ion-virtual-scroll [items]="collection.locations" approxItemHeight="100px">
+      <ion-virtual-scroll [items]="collection?.locations" approxItemHeight="100px">
         <div *virtualItem="let location;"
              (click)="viewLocation(location)"
              (press)="showPopup($event,location)"
              class="list-item ion-activatable ripple-parent" fxLayout="row" fxLayoutGap="1em">
           <div class="item-img-container">
-            <img (error)="onImgError($event)" class="item-img" [src]="location.image" alt="" width="100px"
+            <img (error)="onImgError($event)" class="item-img" [src]="location?.image" alt="" width="100px"
                  height="100px">
           </div>
 
           <div class="item-text-container" fxLayout="column" fxLayoutGap="1em">
             <div class="item-title">
             <span>
-              {{ location.title }}
+              {{ location?.title }}
             </span>
             </div>
             <div class="item-description">
             <span>
-              {{ location.description?.substr(0, 127) }}...
+              {{ location?.description?.substr(0, 127) }}...
             </span>
             </div>
           </div>

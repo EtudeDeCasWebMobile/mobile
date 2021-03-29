@@ -45,7 +45,12 @@ export class EditCollectionPage implements OnInit {
       // @ts-ignore
       this.collection = this.router.getCurrentNavigation().extras.state;
       if (!this.collection) {
-        this.router.navigateByUrl('/home/collections');
+        const id = this.activatedRoute.snapshot.params.id;
+        this.collectionsService.findCollection(id)
+          .subscribe((r: any) => {
+            this.collection = r;
+          });
+        // this.router.navigateByUrl('/home/collections');
       }
     });
 
