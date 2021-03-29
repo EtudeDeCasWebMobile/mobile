@@ -1,13 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {Plugins} from '@capacitor/core';
 import {CollectionsService} from '../services/collections.service';
-import {catchError, switchMap} from 'rxjs/operators';
+import {catchError, mergeMap, switchMap} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
-import {from, throwError} from 'rxjs';
+import {from, of, throwError} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Storage} from '@ionic/storage';
 import {Geojson} from 'geojson-parser-js';
 import {AuthService} from '../services/auth.service';
+import {LocationsService} from '../services/locations.service';
 
 
 const {Toast, Modals} = Plugins;
@@ -26,7 +27,8 @@ export class AddCollectionPage implements OnInit {
     private readonly router: Router,
     private readonly storage: Storage,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly locationsService: LocationsService
   ) {
     this.activatedRoute.queryParams
       .pipe(
@@ -145,7 +147,9 @@ export class AddCollectionPage implements OnInit {
 
   public onFileChange(event) {
     if (event.target.files && event.target.files.length) {
-      const file = event.target.files[0];
+      const file: File = event.target.files[0];
+      const tag = file.name.replace('.geojson', '');
+      console.log(tag);
       const reader = new FileReader();
       reader.onload = () => {
         const data = reader.result;
@@ -156,7 +160,54 @@ export class AddCollectionPage implements OnInit {
             text: `Invalid geojson file`
           });
         } else {
-          console.log(Geojson.parse(data as string));
+          const geojson = Geojson.parse(data as string);
+          console.log(geojson);
+          this.collectionsService.createCollection(tag)
+            .pipe(
+              catchError((err) => {
+                if (err instanceof HttpErrorResponse && err.status === 409) {
+                  return of(null);
+                }
+                return throwError(err);
+              }),
+              switchMap(res => {
+                const reqArr = [];
+                geojson.geometries.map(q => {
+                  reqArr.push({
+                    title: q.featureProperties.find(a => a.key === 'title').value,
+                    // @ts-ignore
+                    latitude: q.coordinate.lat,
+                    // @ts-ignore
+                    longitude: q.coordinate.lng,
+                    description: q.featureProperties.find(a => a.key === 'description').value,
+                    image: q.featureProperties.find(a => a.key === 'image').value,
+                    tags: [tag]
+                  });
+                });
+                console.log(res);
+                return reqArr;
+              }),
+              mergeMap((res: any) => {
+                return this.locationsService.createOwnLocations(res)
+                  .pipe(
+                    catchError(e => {
+                      if (e instanceof HttpErrorResponse && e.status === 409) {
+                        const id = e.error.message.match(/id=(\d+)/i)[0].split('=')[1] as unknown as number;
+                        return this.locationsService.addTagToLocation(id, tag);
+                      }
+                      return of(null);
+                    })
+                  );
+              })
+            )
+            .subscribe(res => {
+              Toast.show({
+                duration: 'long',
+                position: 'bottom',
+                text: `Import successfully finished`
+              });
+              console.log(res);
+            });
         }
 
       };

@@ -303,14 +303,16 @@ export class EditCollectionPage implements OnInit {
     this.collection.locations.map((loc: any) => {
       const newFeature = {
         type: 'Feature',
+        id: loc.id,
         geometry: {
           type: 'Point',
           // @ts-ignore
-          coordinates: `${parseFloat(loc.latitude)}, ${parseFloat(loc.longitude)}`,
-          properties: {
-            title: loc.title,
-            description: loc.description
-          }
+          coordinates: [parseFloat(loc.latitude), parseFloat(loc.longitude)],
+        },
+        properties: {
+          title: loc.title,
+          description: loc.description,
+          image: loc.image
         }
       };
       geojson.features.push(newFeature);
@@ -324,11 +326,11 @@ export class EditCollectionPage implements OnInit {
                 encoding: FilesystemEncoding.UTF8,
                 recursive: true,
                 directory: FilesystemDirectory.Documents,
-                path: `${this.collection.tag}.json`
+                path: `${this.collection.tag}.geojson`
               });
               console.log('Wrote file', result);
             } else {*/
-      this.fileSaverService.saveText(geoJsonString, `${this.collection.tag}.json`);
+      this.fileSaverService.saveText(geoJsonString, `${this.collection.tag}.geojson`);
       //   }
 
     } catch (e) {
