@@ -153,9 +153,8 @@ export class LocationsComponent implements OnInit {
   }
 
   public viewLocation(location: any) {
-    this.router.navigate([`/edit-location/${location.id}`], {
-      state: location,
-      queryParams: {update: true}
+    this.router.navigate([`/view-location/${location.id}`], {
+      state: location
     });
   }
 

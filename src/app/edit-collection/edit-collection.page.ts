@@ -229,9 +229,9 @@ export class EditCollectionPage implements OnInit {
       await this.delete(location);
     } else if (data === 'view') {
       console.log('view');
-      /*this.router.navigate([`/edit-location/${location.id}`], {
+      this.router.navigate([`/view-location/${location.id}`], {
         state: location
-      });*/
+      });
     }
   }
 
@@ -282,9 +282,9 @@ export class EditCollectionPage implements OnInit {
 
   public viewLocation(location: any) {
     console.log('view');
-    /*this.router.navigate([`/edit-location/${location.id}`], {
+    this.router.navigate([`/view-location/${location.id}`], {
       state: location
-    });*/
+    });
   }
 
 

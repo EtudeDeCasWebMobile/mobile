@@ -35,6 +35,10 @@ const routes: Routes = [
     loadChildren: () => import('./edit-location/edit-location.module').then(m => m.EditLocationPageModule)
   },
   {
+    path: 'view-location/:id',
+    loadChildren: () => import('./view-location/view-location.module').then(m => m.ViewLocationModule)
+  },
+  {
     path: '**',
     redirectTo: 'login',
     pathMatch: 'full'
