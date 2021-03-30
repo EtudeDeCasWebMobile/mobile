@@ -16,7 +16,7 @@
            (press)="showPopup($event,location)"
            class="list-item ion-activatable ripple-parent" fxLayout="row" fxLayoutGap="1em">
         <div class="item-img-container">
-          <img (error)="onImgError($event)" class="item-img" [src]="location.image" alt="" width="100px" height="100px">
+          <img (error)="onImgError($event)" class="item-img" [src]="location?.image" alt="" width="100px" height="100px">
         </div>
 
         <div class="item-text-container" fxLayout="column" fxLayoutGap="1em">
@@ -39,7 +39,7 @@
 
     <div *ngIf="locations?.length===0"
          style="color:whitesmoke;position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);width: 80%;text-align: center">
-      <h3>No Location have been created</h3>
+      <h3>No Location has been found</h3>
     </div>
 
   </div>

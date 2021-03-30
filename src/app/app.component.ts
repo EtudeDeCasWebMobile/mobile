@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {from, interval, of, throwError} from 'rxjs';
 import {Storage} from '@ionic/storage';
 import {AlertController, MenuController} from '@ionic/angular';
@@ -9,19 +9,21 @@ import {catchError, distinctUntilChanged, switchMap} from 'rxjs/operators';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {LocationsService} from './services/locations.service';
 import {SettingsService} from './services/settings.service';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
+import {HttpErrorResponse} from '@angular/common/http';
+import {SwUpdate} from '@angular/service-worker';
+import {isPlatformBrowser} from '@angular/common';
+
 
 const {Modals, Geolocation, Toast, Clipboard} = Plugins;
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit {
-
-  public isAuthenticated: boolean;
-  public user: { authToken: string, id: number, email: string };
-  public shareLocation: boolean;
+export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly storage: Storage,
@@ -32,12 +34,29 @@ export class AppComponent implements OnInit {
     private readonly jwtHelperService: JwtHelperService,
     private readonly locationsService: LocationsService,
     private readonly settingsService: SettingsService,
-    private readonly activatedRoute: ActivatedRoute
+    private readonly activatedRoute: ActivatedRoute,
+    @Inject(PLATFORM_ID) private readonly platformId: object,
+    private readonly swUpdate: SwUpdate,
   ) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.swUpdate.available.subscribe((evt: any) => {
+        this.swUpdate.activateUpdate().then(() => {
+          console.log('updated');
+        });
+      });
+    }
+
+
+  }
+
+  public isAuthenticated: boolean;
+  public user: { authToken: string, id: number, email: string };
+  public shareLocation: boolean;
+
+  ngOnDestroy(): void {
   }
 
   ngOnInit() {
-    console.log('kkk');
     this.activatedRoute.queryParams.subscribe(ignore => {
 
       this.authService.isAuthenticated$().subscribe(res => {
@@ -73,7 +92,7 @@ export class AppComponent implements OnInit {
           }
         });
 
-      interval(1000 * 60)
+      interval(1000)
         .pipe(
           switchMap(res => this.authService.getCurrentUser()),
           switchMap(res => {
@@ -134,10 +153,18 @@ export class AppComponent implements OnInit {
       this.locationsService.sharePosition(this.user.id)
         .pipe(
           catchError((err) => {
-            Toast.show({
-              position: 'bottom',
-              text: `An error occured, try again`
-            });
+            if (err instanceof HttpErrorResponse && err.status === 404) {
+              Toast.show({
+                position: 'bottom',
+                text: `User position has not been saved yet`
+              });
+            } else {
+              Toast.show({
+                position: 'bottom',
+                text: `An error occured, try again`
+              });
+            }
+
             return throwError(err);
           })
         )
@@ -190,7 +217,7 @@ export class AppComponent implements OnInit {
       okButtonTitle: 'Visualize',
     });
 
-    if (value.trim() && !cancelled) {
+    if (value?.trim() && !cancelled) {
       this.locationsService.getUserCurrentPosition(value)
         .pipe(
           catchError((e) => {

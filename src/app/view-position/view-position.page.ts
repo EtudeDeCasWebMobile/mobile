@@ -1,22 +1,24 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {icon, latLng, LeafletMouseEvent, Map, marker, tileLayer} from 'leaflet';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {icon, latLng, Map, marker, tileLayer} from 'leaflet';
 import {ActivatedRoute, Router} from '@angular/router';
-import {LocationsService} from '../services/locations.service';
-import {AlertController, IonInput, ModalController} from '@ionic/angular';
-import {CustomValidators} from 'ngx-custom-validators';
-import {catchError} from 'rxjs/operators';
-import {HttpErrorResponse} from '@angular/common/http';
-import {Toast} from '@capacitor/core';
-import {throwError} from 'rxjs';
-import {SelectTagsComponent} from '../add-location/select-tags/select-tags.component';
+import {AlertController, ModalController} from '@ionic/angular';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-view-position',
   templateUrl: './view-position.page.html',
   styleUrls: ['./view-position.page.scss'],
 })
-export class ViewPositionPage implements OnInit, AfterViewInit {
+export class ViewPositionPage implements OnInit, AfterViewInit, OnDestroy {
+
+  constructor(
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly alertController: AlertController,
+    private readonly modalController: ModalController,
+  ) {
+  }
 
   public user;
   public layers = [];
@@ -39,12 +41,7 @@ export class ViewPositionPage implements OnInit, AfterViewInit {
     titleCancel: 'Exit Fullscreen',
   };
 
-  constructor(
-    private readonly router: Router,
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly alertController: AlertController,
-    private readonly modalController: ModalController,
-  ) {
+  ngOnDestroy(): void {
   }
 
   ngOnInit() {

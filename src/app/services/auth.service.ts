@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {from, Observable, Subject} from 'rxjs';
@@ -7,13 +7,13 @@ import {environment} from '../../environments';
 import {Toast} from '@capacitor/core';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {Router} from '@angular/router';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
-
-  private isAuthenticatedSubject = new Subject<boolean>();
+export class AuthService implements OnDestroy{
 
   constructor(
     private readonly http: HttpClient,
@@ -21,6 +21,10 @@ export class AuthService {
     private readonly jwtHelperService: JwtHelperService,
     private readonly router: Router
   ) {
+  }
+
+  private isAuthenticatedSubject = new Subject<boolean>();
+  ngOnDestroy(): void {
   }
 
   public isAuthenticated$(): Observable<boolean> {

@@ -1,22 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CollectionsService} from '../services/collections.service';
 import {LocationsService} from '../services/locations.service';
 import {AuthService} from '../services/auth.service';
 import {switchMap} from 'rxjs/operators';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit {
-
-  public searchValue: string;
-  public isLocation: boolean;
-  public isCollection: boolean;
-  public isfilterShown = false;
-  public user;
+export class HomePage implements OnInit, OnDestroy {
 
   constructor(
     private readonly router: Router,
@@ -26,10 +22,10 @@ export class HomePage implements OnInit {
     private readonly authService: AuthService
   ) {
 
-    if (router.url.trim().includes('/home/collections')) {
+    if (router.url?.trim()?.includes('/home/collections')) {
       this.isCollection = true;
       this.isLocation = false;
-    } else if (router.url.trim().includes('/home/locations')) {
+    } else if (router.url?.trim()?.includes('/home/locations')) {
       this.isCollection = false;
       this.isLocation = true;
     }
@@ -40,6 +36,14 @@ export class HomePage implements OnInit {
       ).subscribe(res => {
       this.user = res;
     });
+  }
+
+  public searchValue: string;
+  public isLocation: boolean;
+  public isCollection: boolean;
+  public isfilterShown = false;
+  public user;
+  ngOnDestroy(): void {
   }
 
   public ngOnInit() {

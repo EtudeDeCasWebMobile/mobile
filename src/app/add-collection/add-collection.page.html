@@ -16,7 +16,7 @@
 
     <ion-button [fxHide]="user?.id == 0" class="btn" expand="block" (click)="fileInput.click()">Import</ion-button>
     <input type="file" [hidden]="true"
-           accept=".geojson"
+           accept="application/json"
            #fileInput (change)="onFileChange($event)">
 
 

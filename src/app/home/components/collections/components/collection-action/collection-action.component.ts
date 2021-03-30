@@ -1,25 +1,35 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PopoverController} from '@ionic/angular';
-import {switchMap} from 'rxjs/operators';
-import {ActivatedRoute} from '@angular/router';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {AuthService} from '../../../../../services/auth.service';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-collection-action',
   templateUrl: './collection-action.component.html',
   styleUrls: ['./collection-action.component.scss'],
 })
-export class CollectionActionComponent implements OnInit {
+export class CollectionActionComponent implements OnInit, OnDestroy {
 
   public user;
 
+
   constructor(
-    private readonly popoverController: PopoverController
+    private readonly popoverController: PopoverController,
+    private readonly authService: AuthService
   ) {
 
   }
 
+
+  ngOnDestroy(): void {
+  }
+
   ngOnInit() {
+    this.authService.getCurrentUser()
+      .subscribe(res => {
+        this.user = res;
+      });
   }
 
   public async edit() {

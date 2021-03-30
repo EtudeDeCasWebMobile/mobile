@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Plugins} from '@capacitor/core';
 import {CollectionsService} from '../services/collections.service';
 import {catchError, mergeMap, switchMap} from 'rxjs/operators';
@@ -9,18 +9,18 @@ import {Storage} from '@ionic/storage';
 import {Geojson} from 'geojson-parser-js';
 import {AuthService} from '../services/auth.service';
 import {LocationsService} from '../services/locations.service';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
 
 const {Toast, Modals} = Plugins;
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-add-collection',
   templateUrl: './add-collection.page.html',
   styleUrls: ['./add-collection.page.scss'],
 })
-export class AddCollectionPage implements OnInit {
-
-  public user;
+export class AddCollectionPage implements OnInit, OnDestroy {
 
   constructor(
     private readonly collectionsService: CollectionsService,
@@ -38,6 +38,10 @@ export class AddCollectionPage implements OnInit {
     });
   }
 
+  public user;
+  ngOnDestroy(): void {
+  }
+
   ngOnInit() {
   }
 
@@ -52,7 +56,7 @@ export class AddCollectionPage implements OnInit {
     });
     if (value?.trim()?.length > 0 && !cancelled) {
       // create the collection
-      this.collectionsService.createCollection(value.trim())
+      this.collectionsService.createCollection(value?.trim())
         .pipe(
           catchError((err) => {
             if (err instanceof HttpErrorResponse) {
@@ -174,13 +178,13 @@ export class AddCollectionPage implements OnInit {
                 const reqArr = [];
                 geojson.geometries.map(q => {
                   reqArr.push({
-                    title: q.featureProperties.find(a => a.key === 'title').value,
+                    title: q?.featureProperties?.find(a => a.key === 'title')?.value,
                     // @ts-ignore
-                    latitude: q.coordinate.lat,
+                    latitude: q?.coordinate?.lat,
                     // @ts-ignore
-                    longitude: q.coordinate.lng,
-                    description: q.featureProperties.find(a => a.key === 'description').value,
-                    image: q.featureProperties.find(a => a.key === 'image').value,
+                    longitude: q?.coordinate?.lng,
+                    description: q?.featureProperties?.find(a => a.key === 'description')?.value,
+                    image: q?.featureProperties?.find(a => a.key === 'image')?.value,
                     tags: [tag]
                   });
                 });

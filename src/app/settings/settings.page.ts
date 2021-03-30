@@ -3,11 +3,13 @@ import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {Storage} from '@ionic/storage';
 import {Plugins} from '@capacitor/core';
 import {AuthService} from '../services/auth.service';
-import {from} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {from, of} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 import {SettingsService} from '../services/settings.service';
+import {JwtHelperService} from '@auth0/angular-jwt';
+import {LocationsService} from '../services/locations.service';
 
-const {Modals, Toast} = Plugins;
+const {Modals, Geolocation} = Plugins;
 
 @AutoUnsubscribe()
 @Component({
@@ -25,13 +27,15 @@ export class SettingsPage implements OnInit, OnDestroy {
   constructor(
     private readonly storage: Storage,
     private readonly authService: AuthService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly jwtHelperService: JwtHelperService,
+    private readonly locationsService: LocationsService
   ) {
   }
 
   async ngOnInit() {
     this.serverUrl = await this.storage.get('server');
-    this.isShareAllowed = (await this.storage.get('user')).sharePosition;
+    this.isShareAllowed = !!(await this.storage.get('user'))?.sharePosition;
 
     this.authService.isAuthenticated$().subscribe(res => {
       this.isAuthenticated = res;
@@ -44,15 +48,16 @@ export class SettingsPage implements OnInit, OnDestroy {
   }
 
   public async changeServerUrl() {
-    const {value} = await Modals.prompt({
+    const {value, cancelled} = await Modals.prompt({
       message: 'Server url',
       title: 'Server',
       cancelButtonTitle: 'Cancel',
       okButtonTitle: 'save'
     });
-
-    this.serverUrl = value;
-    this.storage.set('server', this.serverUrl);
+    if (value?.trim()?.length > 0 && !cancelled) {
+      this.serverUrl = value;
+      await this.storage.set('server', this.serverUrl);
+    }
 
     /*    if (!!value?.match(`[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)`) ||
           !!value?.match(`^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$`)) {
@@ -72,17 +77,40 @@ export class SettingsPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
   }
 
-  togglePosition($event: any) {
+  togglePosition(event: any) {
     from(this.storage.get('user'))
       .pipe(map(user => {
-        const temp = {...user, sharePosition: $event.detail.checked};
+        const temp = {...user, sharePosition: event.detail.checked};
         this.storage.set('user', temp);
+        if (event.detail.checked) {
+          this.authService.getCurrentUser()
+            .pipe(
+              switchMap(res => {
+                if (!!res && !this.jwtHelperService.isTokenExpired(res.authToken) && res.sharePosition) {
+                  return from(Geolocation.getCurrentPosition({enableHighAccuracy: true}));
+                }
+                return of(null);
+              }),
+              switchMap(res => {
+                if (!!res) {
+                  return this.locationsService.updatePosition(this.user.id, {
+                    latitude: res.coords.latitude,
+                    longitude: res.coords.longitude
+                  });
+                }
+                return of(res);
+              })
+            )
+            .subscribe(res => {
+              console.log('api call results = ', res);
+            });
+        }
         return temp;
       }))
       .subscribe(res => {
         this.user = res;
-        console.log($event.detail.checked);
-        this.settingsService.shareLocation$.next($event.detail.checked);
+        console.log(event.detail.checked);
+        this.settingsService.shareLocation$.next(event.detail.checked);
       });
   }
 

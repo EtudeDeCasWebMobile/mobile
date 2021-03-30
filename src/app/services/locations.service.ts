@@ -1,23 +1,28 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {from, Observable, Subject} from 'rxjs';
 import {HttpClient, HttpRequest} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {switchMap} from 'rxjs/operators';
 import {environment} from '../../environments';
 import {LocationInterface} from '../models/location.interface';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Injectable({
   providedIn: 'root'
 })
-export class LocationsService {
-
-  public search = new Subject<string>();
+export class LocationsService implements OnDestroy {
 
 
   constructor(
     private readonly httpClient: HttpClient,
     private readonly storage: Storage
   ) {
+  }
+
+  public search = new Subject<string>();
+
+  ngOnDestroy(): void {
   }
 
   public getAllOwnLocations(): Observable<{ locations: LocationInterface[] }> {

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {icon, latLng, LeafletMouseEvent, Map, marker, tileLayer} from 'leaflet';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -10,13 +10,32 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {Toast} from '@capacitor/core';
 import {throwError} from 'rxjs';
 import {SelectTagsComponent} from '../add-location/select-tags/select-tags.component';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-edit-location',
   templateUrl: './edit-location.page.html',
   styleUrls: ['./edit-location.page.scss'],
 })
-export class EditLocationPage implements OnInit, AfterViewInit {
+export class EditLocationPage implements OnInit, AfterViewInit, OnDestroy {
+
+  constructor(
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly locationsService: LocationsService,
+    private readonly alertController: AlertController,
+    private readonly modalController: ModalController,
+    private readonly fb: FormBuilder
+  ) {
+    this.initForm();
+
+  }
+
+
+  get tags(): FormArray {
+    return this.locationForm.get('tags') as FormArray;
+  }
 
   public locationForm: FormGroup;
   public location;
@@ -40,17 +59,7 @@ export class EditLocationPage implements OnInit, AfterViewInit {
     title: 'View Fullscreen',
     titleCancel: 'Exit Fullscreen',
   };
-
-  constructor(
-    private readonly router: Router,
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly locationsService: LocationsService,
-    private readonly alertController: AlertController,
-    private readonly modalController: ModalController,
-    private readonly fb: FormBuilder
-  ) {
-    this.initForm();
-
+  ngOnDestroy(): void {
   }
 
   ngOnInit() {
@@ -207,11 +216,6 @@ export class EditLocationPage implements OnInit, AfterViewInit {
     });
 
     return await modal.present();
-  }
-
-
-  get tags(): FormArray {
-    return this.locationForm.get('tags') as FormArray;
   }
 
   onMapReady(map: Map) {

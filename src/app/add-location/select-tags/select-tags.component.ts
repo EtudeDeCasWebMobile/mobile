@@ -1,17 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {CollectionsService} from '../../services/collections.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {map, switchMap} from 'rxjs/operators';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-select-tags',
   templateUrl: './select-tags.component.html',
   styleUrls: ['./select-tags.component.scss'],
 })
-export class SelectTagsComponent implements OnInit {
-
-  public collections: any[] = [];
+export class SelectTagsComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly modalController: ModalController,
@@ -19,6 +19,11 @@ export class SelectTagsComponent implements OnInit {
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute
   ) {
+  }
+
+  public collections: any[] = [];
+
+  ngOnDestroy(): void {
   }
 
   ngOnInit() {

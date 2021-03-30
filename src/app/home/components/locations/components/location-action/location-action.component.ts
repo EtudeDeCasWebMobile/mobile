@@ -1,22 +1,24 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PopoverController} from '@ionic/angular';
-import {switchMap} from 'rxjs/operators';
-import {ActivatedRoute} from '@angular/router';
-import {AuthService} from '../../../../../services/auth.service';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-collection-action',
   templateUrl: './location-action.component.html',
   styleUrls: ['./location-action.component.scss'],
 })
-export class LocationActionComponent implements OnInit {
-
-  public user;
+export class LocationActionComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly popoverController: PopoverController
   ) {
 
+  }
+
+  public user;
+
+  ngOnDestroy(): void {
   }
 
   ngOnInit() {

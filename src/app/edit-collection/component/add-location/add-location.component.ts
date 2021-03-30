@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {CollectionInterface} from '../../../models/collection.interface';
 import {ModalController, Platform, PopoverController} from '@ionic/angular';
 import {LocationInterface} from '../../../models/location.interface';
@@ -9,19 +9,17 @@ import {AuthService} from '../../../services/auth.service';
 import {catchError, switchMap} from 'rxjs/operators';
 import {throwError} from 'rxjs';
 import {Plugins} from '@capacitor/core';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
 const {Toast} = Plugins;
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-add-location',
   templateUrl: './add-location.component.html',
   styleUrls: ['./add-location.component.scss'],
 })
-export class AddLocationComponent implements OnInit {
-
-  @Input() collection: CollectionInterface;
-  public locations: LocationInterface[] = [];
-  public user;
+export class AddLocationComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly locationsService: LocationsService,
@@ -41,6 +39,12 @@ export class AddLocationComponent implements OnInit {
         this.user = res;
         this.loadData();
       });
+  }
+
+  @Input() collection: CollectionInterface;
+  public locations: LocationInterface[] = [];
+  public user;
+  ngOnDestroy(): void {
   }
 
   ngOnInit() {

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CollectionsService} from '../services/collections.service';
 import {catchError} from 'rxjs/operators';
@@ -13,17 +13,17 @@ import {Storage} from '@ionic/storage';
 import {AuthService} from '../services/auth.service';
 import {LocationsService} from '../services/locations.service';
 import {FileSaverService} from 'ngx-filesaver';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
 const {Toast, Modals, Clipboard, Haptics, Filesystem} = Plugins;
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-edit-collection',
   templateUrl: './edit-collection.page.html',
   styleUrls: ['./edit-collection.page.scss'],
 })
-export class EditCollectionPage implements OnInit {
-  public collection: CollectionInterface;
-  public isShared = false;
+export class EditCollectionPage implements OnInit, OnDestroy {
 
   constructor(
     private readonly router: Router,
@@ -38,6 +38,12 @@ export class EditCollectionPage implements OnInit {
     private readonly locationsService: LocationsService,
     private readonly fileSaverService: FileSaverService
   ) {
+  }
+
+  public collection: CollectionInterface;
+  public isShared = false;
+
+  ngOnDestroy(): void {
   }
 
   ngOnInit() {
@@ -70,7 +76,7 @@ export class EditCollectionPage implements OnInit {
     });
     if (value?.trim()?.length > 0 && !cancelled) {
       // create the collection
-      this.collectionsService.updateCollection(this.collection.id, value.trim())
+      this.collectionsService.updateCollection(this.collection.id, value?.trim())
         .pipe(
           catchError((err) => {
             if (err instanceof HttpErrorResponse) {
@@ -307,12 +313,12 @@ export class EditCollectionPage implements OnInit {
         geometry: {
           type: 'Point',
           // @ts-ignore
-          coordinates: [parseFloat(loc.latitude), parseFloat(loc.longitude)],
+          coordinates: [parseFloat(loc?.latitude), parseFloat(loc?.longitude)],
         },
         properties: {
-          title: loc.title,
-          description: loc.description,
-          image: loc.image
+          title: loc?.title,
+          description: loc?.description,
+          image: loc?.image
         }
       };
       geojson.features.push(newFeature);

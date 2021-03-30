@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CollectionInterface} from '../../../models/collection.interface';
 import {CollectionsService} from '../../../services/collections.service';
 // @ts-ignore
@@ -12,30 +12,18 @@ import {forkJoin, from, of, throwError} from 'rxjs';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {AuthService} from '../../../services/auth.service';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
 
 const {Haptics, Toast, Modals} = Plugins;
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-collections',
   templateUrl: './collections.component.html',
   styleUrls: ['./collections.component.scss'],
 })
-export class CollectionsComponent implements OnInit {
-
-  public collections: CollectionInterface[];
-  public originalCollections: CollectionInterface[];
-  public sharedCollections: CollectionInterface[];
-  public originalSharedCollections: CollectionInterface[];
-  public isFilterShown = false;
-  public user;
-  public filters = [{
-    title: 'Owned collections',
-    checked: true
-  }, {
-    title: 'Shared collections',
-    checked: true
-  }];
+export class CollectionsComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly collectionsService: CollectionsService,
@@ -59,6 +47,23 @@ export class CollectionsComponent implements OnInit {
       this.user = res;
     });
 
+  }
+
+  public collections: CollectionInterface[];
+  public originalCollections: CollectionInterface[];
+  public sharedCollections: CollectionInterface[];
+  public originalSharedCollections: CollectionInterface[];
+  public isFilterShown = false;
+  public user;
+  public filters = [{
+    title: 'Owned collections',
+    checked: true
+  }, {
+    title: 'Shared collections',
+    checked: true
+  }];
+
+  ngOnDestroy(): void {
   }
 
   ngOnInit() {

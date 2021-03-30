@@ -1,6 +1,6 @@
 /// <reference types='@runette/leaflet-fullscreen' />
 
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AlertController, IonInput, ModalController} from '@ionic/angular';
 import {LocationsService} from '../services/locations.service';
@@ -12,13 +12,31 @@ import {Toast} from '@capacitor/core';
 import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
 import {throwError} from 'rxjs';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-add-location',
   templateUrl: './add-location.page.html',
   styleUrls: ['./add-location.page.scss'],
 })
-export class AddLocationPage implements OnInit, AfterViewInit {
+export class AddLocationPage implements OnInit, AfterViewInit, OnDestroy {
+
+  constructor(
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly locationsService: LocationsService,
+    private readonly alertController: AlertController,
+    private readonly modalController: ModalController,
+    private readonly fb: FormBuilder
+  ) {
+    this.initForm();
+  }
+
+
+  get tags(): FormArray {
+    return this.locationForm.get('tags') as FormArray;
+  }
 
   public locationForm: FormGroup;
   public layers = [];
@@ -42,16 +60,7 @@ export class AddLocationPage implements OnInit, AfterViewInit {
     title: 'View Fullscreen',
     titleCancel: 'Exit Fullscreen',
   };
-
-  constructor(
-    private readonly router: Router,
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly locationsService: LocationsService,
-    private readonly alertController: AlertController,
-    private readonly modalController: ModalController,
-    private readonly fb: FormBuilder
-  ) {
-    this.initForm();
+  ngOnDestroy(): void {
   }
 
   ngOnInit() {
@@ -179,11 +188,6 @@ export class AddLocationPage implements OnInit, AfterViewInit {
     });
 
     return await modal.present();
-  }
-
-
-  get tags(): FormArray {
-    return this.locationForm.get('tags') as FormArray;
   }
 
   onMapReady(map: Map) {

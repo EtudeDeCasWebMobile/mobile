@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LocationInterface} from '../../../models/location.interface';
 import {LocationsService} from '../../../services/locations.service';
 // @ts-ignore
@@ -12,19 +12,18 @@ import {LocationActionComponent} from './components/location-action/location-act
 import {Plugins} from '@capacitor/core';
 import {HttpErrorResponse} from '@angular/common/http';
 import {throwError} from 'rxjs';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
 const {Toast, Haptics, Modals} = Plugins;
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-locations',
   templateUrl: './locations.component.html',
   styleUrls: ['./locations.component.scss'],
 })
 
-export class LocationsComponent implements OnInit {
-  public locations: LocationInterface[] = [];
-  public originalLocations: LocationInterface[] = [];
-  public user;
+export class LocationsComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly locationsService: LocationsService,
@@ -44,6 +43,11 @@ export class LocationsComponent implements OnInit {
         this.user = res;
         this.loadData();
       });
+  }
+  public locations: LocationInterface[] = [];
+  public originalLocations: LocationInterface[] = [];
+  public user;
+  ngOnDestroy(): void {
   }
 
   ngOnInit() {

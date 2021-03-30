@@ -1,12 +1,14 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {ViewPositionPage} from './view-position.page';
+import {AuthGuard} from '../guards/auth.guard';
 
 
 const routes: Routes = [
   {
     path: '',
-    component: ViewPositionPage
+    component: ViewPositionPage,
+    canActivate: [AuthGuard]
   }
 ];
 
