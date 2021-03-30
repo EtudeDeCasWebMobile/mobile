@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <span fxLayout="row nowrap" fxLayoutAlign="start center" fxLayoutGap="7px">
+        <ion-icon style="font-size:24px" name="bookmark"></ion-icon>
+        <span style="color:whitesmoke" translate>Visualize position</span>
+      </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div fxLayout="column">
+
+    <div class="map"
+         leaflet
+         [leafletOptions]="options"
+         [leafletLayers]="layers"
+         (leafletMapReady)="onMapReady($event)"
+    ></div>
+    <leaflet-fullscreen-control
+      [map]="map"
+      [options]="fullscreenOptions"
+    ></leaflet-fullscreen-control>
+
+    <div
+      fxLayout="column" fxLayoutAlign="start stretch"
+      fxLayoutGap="2px"
+      class="form-container"
+    >
+
+      <section class="ion-item" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1em">
+        <ion-text>
+          <span style="color: whitesmoke;font-size: 20px" translate>{{user?.email}}</span>
+        </ion-text>
+      </section>
+
+      <section class="ion-item" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1em">
+
+        <div>
+          <img src="/assets/images/no-image.webp" [alt]="user?.email" height="200px">
+        </div>
+      </section>
+
+
+    </div>
+
+  </div>
+</ion-content>

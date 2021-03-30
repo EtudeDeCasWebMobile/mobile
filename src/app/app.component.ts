@@ -1,25 +1,23 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {from, interval, of, throwError} from 'rxjs';
 import {Storage} from '@ionic/storage';
 import {AlertController, MenuController} from '@ionic/angular';
 import {Plugins} from '@capacitor/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from './services/auth.service';
 import {catchError, distinctUntilChanged, switchMap} from 'rxjs/operators';
-import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {LocationsService} from './services/locations.service';
 import {SettingsService} from './services/settings.service';
 
 const {Modals, Geolocation, Toast, Clipboard} = Plugins;
 
-@AutoUnsubscribe()
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
   public isAuthenticated: boolean;
   public user: { authToken: string, id: number, email: string };
@@ -33,67 +31,73 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly authService: AuthService,
     private readonly jwtHelperService: JwtHelperService,
     private readonly locationsService: LocationsService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly activatedRoute: ActivatedRoute
   ) {
   }
 
-  async ngOnInit() {
+  ngOnInit() {
+    console.log('kkk');
+    this.activatedRoute.queryParams.subscribe(ignore => {
 
-    this.authService.isAuthenticated$().subscribe(res => {
-      this.isAuthenticated = res;
-    });
-
-    this.authService.getIsAuthnticatedSubject()
-      .subscribe(res => {
+      this.authService.isAuthenticated$().subscribe(res => {
         this.isAuthenticated = res;
-        if (this.isAuthenticated) {
-          this.authService.getCurrentUser().subscribe(user => {
-            this.user = user;
-            // @ts-ignore
-            this.shareLocation = user?.shareLocation;
-          });
-        }
       });
 
-    this.settingsService.shareLocation$.subscribe(res => {
-      // @ts-ignore
-      this.shareLocation = res;
-    });
-
-    from(this.storage.get('server'))
-      .subscribe(async (result) => {
-        if (!result) {
-          const {value, cancelled} = await this.showPrompt();
-          if (value?.trim()?.length > 0 && !cancelled) {
-            await this.storage.set('server', value);
-            console.log(value);
-          }
-        }
-      });
-
-    interval(1000 * 60)
-      .pipe(
-        switchMap(res => this.authService.getCurrentUser()),
-        switchMap(res => {
-          if (!!res && !this.jwtHelperService.isTokenExpired(res.authToken) && res.sharePosition) {
-            return from(Geolocation.getCurrentPosition({enableHighAccuracy: true}));
-          }
-          return of(null);
-        }),
-        distinctUntilChanged(),
-        switchMap(res => {
-          if (!!res) {
-            return this.locationsService.updatePosition(this.user.id, {
-              latitude: res.coords.latitude,
-              longitude: res.coords.longitude
+      this.authService.getIsAuthnticatedSubject()
+        .subscribe(res => {
+          this.isAuthenticated = res;
+          if (this.isAuthenticated) {
+            this.authService.getCurrentUser().subscribe(user => {
+              this.user = user;
+              // @ts-ignore
+              this.shareLocation = user?.shareLocation;
             });
           }
-          return of(res);
-        })
-      )
-      .subscribe(res => {
-        console.log('api call results = ', res);
+        });
+
+      this.settingsService.shareLocation$.subscribe(res => {
+        console.log('share subject', res);
+        // @ts-ignore
+        this.shareLocation = res;
       });
+
+      from(this.storage.get('server'))
+        .subscribe(async (result) => {
+          if (!result) {
+            const {value, cancelled} = await this.showPrompt();
+            if (value?.trim()?.length > 0 && !cancelled) {
+              await this.storage.set('server', value);
+              console.log(value);
+            }
+          }
+        });
+
+      interval(1000 * 60)
+        .pipe(
+          switchMap(res => this.authService.getCurrentUser()),
+          switchMap(res => {
+            if (!!res && !this.jwtHelperService.isTokenExpired(res.authToken) && res.sharePosition) {
+              return from(Geolocation.getCurrentPosition({enableHighAccuracy: true}));
+            }
+            return of(null);
+          }),
+          distinctUntilChanged(),
+          switchMap(res => {
+            if (!!res) {
+              return this.locationsService.updatePosition(this.user.id, {
+                latitude: res.coords.latitude,
+                longitude: res.coords.longitude
+              });
+            }
+            return of(res);
+          })
+        )
+        .subscribe(res => {
+          console.log('api call results = ', res);
+        });
+
+    });
 
   }
 
@@ -118,57 +122,93 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl(s);
   }
 
-  ngOnDestroy(): void {
-  }
-
   public logout() {
     this.menuController.close();
     this.authService.logout();
     this.router.navigateByUrl('/login');
   }
 
-  public sharePosition() {
-    this.locationsService.sharePosition(this.user.id)
-      .pipe(
-        catchError((err) => {
-          Toast.show({
-            position: 'bottom',
-            text: `An error occured, try again`
-          });
-          return throwError(err);
-        })
-      )
-      .subscribe(async (res: any) => {
-        console.log(`${res.link}?token=${res.token}`);
-        const alert = await this.alertController.create({
-          cssClass: 'my-custom-class',
-          header: 'Shared link',
-          inputs: [
-            {
-              name: 'token',
-              type: 'text',
-              id: 'token',
-              value: `${res.link}?token=${res.token}`,
-              attributes: {readonly: true}
-            }
-          ],
-          buttons: [
-            {
-              text: 'Copy',
-              handler: () => {
-                Clipboard.write({string: `${res.link}?token=${res.token}`});
-                Toast.show({
-                  duration: 'short',
-                  position: 'bottom',
-                  text: 'Link have been copied'
-                });
+  public async sharePosition() {
+    const isShareActivated = (await this.storage.get('user')).sharePosition;
+    if (isShareActivated) {
+      this.locationsService.sharePosition(this.user.id)
+        .pipe(
+          catchError((err) => {
+            Toast.show({
+              position: 'bottom',
+              text: `An error occured, try again`
+            });
+            return throwError(err);
+          })
+        )
+        .subscribe(async (res: any) => {
+          console.log(`${res.link}?token=${res.token}`);
+          const alert = await this.alertController.create({
+            cssClass: 'my-custom-class',
+            header: 'Shared link',
+            inputs: [
+              {
+                name: 'token',
+                type: 'text',
+                id: 'token',
+                value: `${res.link}?token=${res.token}`,
+                attributes: {readonly: true}
               }
-            }
-          ]
-        });
+            ],
+            buttons: [
+              {
+                text: 'Copy',
+                handler: () => {
+                  Clipboard.write({string: `${res.link}?token=${res.token}`});
+                  Toast.show({
+                    duration: 'short',
+                    position: 'bottom',
+                    text: 'Link have been copied'
+                  });
+                }
+              }
+            ]
+          });
 
-        await alert.present();
+          await alert.present();
+        });
+    } else {
+      Toast.show({
+        text: `You have to activate share option first`,
+        position: 'bottom',
+        duration: 'long'
       });
+    }
+
+  }
+
+  public async viewUserSharedLocation() {
+    // @ts-ignore
+    const {value, cancelled} = await Modals.prompt({
+      title: 'Visualize shared user position',
+      inputPlaceholder: 'http://exemple.com?token=your_token',
+      okButtonTitle: 'Visualize',
+    });
+
+    if (value.trim() && !cancelled) {
+      this.locationsService.getUserCurrentPosition(value)
+        .pipe(
+          catchError((e) => {
+            Toast.show({
+              duration: 'long',
+              position: 'bottom',
+              text: `An error occurred`
+            });
+            return throwError(e);
+          }),
+        )
+        .subscribe(res => {
+          this.router.navigate([`view-position`], {
+            state: {...res, ...this.user}
+          });
+        });
+    }
+
   }
 
 }

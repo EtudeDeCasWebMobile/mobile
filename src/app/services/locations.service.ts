@@ -59,14 +59,8 @@ export class LocationsService {
       );
   }
 
-  // not implemented in backend yet
-  public findLocations(id: number) {
-    return from(this.storage.get('server'))
-      .pipe(
-        switchMap(url => {
-          return this.httpClient.get(`${environment.url}${url}/locations/${id}`);
-        })
-      );
+  public getUserCurrentPosition(link: string) {
+    return this.httpClient.get(`${environment.url}${link}`);
   }
 
   public updateLocations(id: number, location: Partial<LocationInterface>) {

@@ -20,6 +20,7 @@ export class SettingsPage implements OnInit, OnDestroy {
   public serverUrl = '';
   public isAuthenticated: boolean;
   public user;
+  public isShareAllowed: any;
 
   constructor(
     private readonly storage: Storage,
@@ -30,6 +31,7 @@ export class SettingsPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.serverUrl = await this.storage.get('server');
+    this.isShareAllowed = (await this.storage.get('user')).sharePosition;
 
     this.authService.isAuthenticated$().subscribe(res => {
       this.isAuthenticated = res;
@@ -79,6 +81,7 @@ export class SettingsPage implements OnInit, OnDestroy {
       }))
       .subscribe(res => {
         this.user = res;
+        console.log($event.detail.checked);
         this.settingsService.shareLocation$.next($event.detail.checked);
       });
   }
