@@ -21,7 +21,7 @@
           {{serverUrl.length > 15 ? serverUrl?.substr(0, 13) + '...' : serverUrl}}
         </ion-text>
       </ion-item>
-      <ion-item [fxHide]="!isAuthenticated && user?.id==0" button lines="full" class="labels-list">
+      <ion-item [fxHide]="!isAuthenticated || user?.id===0" button lines="full" class="labels-list">
         <ion-label>
           <span translate>Share my position</span>
         </ion-label>

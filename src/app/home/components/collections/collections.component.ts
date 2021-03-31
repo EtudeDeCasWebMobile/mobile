@@ -68,8 +68,8 @@ export class CollectionsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.sharedCollections = []; // wait for api implementation
-    this.originalSharedCollections = []; // wait for api implementation
+    // this.sharedCollections = []; // wait for api implementation
+    // this.originalSharedCollections = []; // wait for api implementation
     this.activatedRoute.queryParams
       .pipe(
         switchMap(res => this.authService.getCurrentUser())

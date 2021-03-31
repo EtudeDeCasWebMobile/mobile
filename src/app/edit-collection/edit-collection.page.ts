@@ -4,7 +4,7 @@ import {CollectionsService} from '../services/collections.service';
 import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
 import {throwError} from 'rxjs';
-import {Plugins} from '@capacitor/core';
+import {FilesystemDirectory, FilesystemEncoding, Plugins} from '@capacitor/core';
 import {CollectionInterface} from '../models/collection.interface';
 import {AlertController, ModalController, Platform, PopoverController} from '@ionic/angular';
 import {AddLocationComponent} from './component/add-location/add-location.component';
@@ -70,6 +70,7 @@ export class EditCollectionPage implements OnInit, OnDestroy {
     const {value, cancelled} = await Modals.prompt({
       okButtonTitle: 'Save',
       title: `Edit collection`,
+      message: `Edit collection`,
       cancelButtonTitle: `Cancel`,
       inputPlaceholder: `Tag`,
       inputText: this.collection?.tag
@@ -326,18 +327,22 @@ export class EditCollectionPage implements OnInit, OnDestroy {
     });
     const geoJsonString = JSON.stringify(geojson);
     try {
-      /*      if (this.platform.is('capacitor')) {
-              const result = await Filesystem.writeFile({
-                data: geoJsonString,
-                encoding: FilesystemEncoding.UTF8,
-                recursive: true,
-                directory: FilesystemDirectory.Documents,
-                path: `${this.collection.tag}.geojson`
-              });
-              console.log('Wrote file', result);
-            } else {*/
-      this.fileSaverService.saveText(geoJsonString, `${this.collection.tag}.geojson`);
-      //   }
+      if (this.platform.is('capacitor')) {
+        const result = await Filesystem.writeFile({
+          data: geoJsonString,
+          encoding: FilesystemEncoding.UTF8,
+          recursive: true,
+          directory: FilesystemDirectory.Documents,
+          path: `${this.collection?.tag}.geojson`
+        });
+        Toast.show({
+          text: `Wrote file '${result}'`,
+          position: 'bottom',
+          duration: 'long'
+        });
+      } else {
+        this.fileSaverService.saveText(geoJsonString, `${this.collection.tag}.geojson`);
+      }
 
     } catch (e) {
       Toast.show({

@@ -52,6 +52,7 @@ export class SettingsPage implements OnInit, OnDestroy {
       message: 'Server url',
       title: 'Server',
       cancelButtonTitle: 'Cancel',
+      inputText: this.serverUrl,
       okButtonTitle: 'save'
     });
     if (value?.trim()?.length > 0 && !cancelled) {

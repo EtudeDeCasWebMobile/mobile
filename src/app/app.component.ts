@@ -122,12 +122,16 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async showPrompt() {
 
-    const promptRet = await Modals.prompt({
+    const {value, cancelled} = await Modals.prompt({
       title: 'Add a server',
       inputPlaceholder: 'http://www.server.com',
       okButtonTitle: 'Save',
       message: `Add a server URL/IP address`
     });
+    let promptRet = {value, cancelled};
+    if (!(value?.trim()?.length > 0 && !cancelled)) {
+      promptRet = await this.showPrompt();
+    }
     /*    if (!(!!promptRet?.value?.match(`[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)`) ||
           !!promptRet?.value?.match(`^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$`))) {
           promptRet = await this.showPrompt();
@@ -206,6 +210,7 @@ export class AppComponent implements OnInit, OnDestroy {
         duration: 'long'
       });
     }
+    this.menuController.close();
 
   }
 
@@ -213,6 +218,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // @ts-ignore
     const {value, cancelled} = await Modals.prompt({
       title: 'Visualize shared user position',
+      message: 'Visualize shared user position',
       inputPlaceholder: 'http://exemple.com?token=your_token',
       okButtonTitle: 'Visualize',
     });
@@ -235,6 +241,7 @@ export class AppComponent implements OnInit, OnDestroy {
           });
         });
     }
+    this.menuController.close();
 
   }
 

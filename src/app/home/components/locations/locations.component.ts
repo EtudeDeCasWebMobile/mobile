@@ -44,15 +44,17 @@ export class LocationsComponent implements OnInit, OnDestroy {
         this.loadData();
       });
   }
-  public locations: LocationInterface[] = [];
+
+  public locations: LocationInterface[];
   public originalLocations: LocationInterface[] = [];
   public user;
+
   ngOnDestroy(): void {
   }
 
   ngOnInit() {
-    this.locations = [];
-    this.originalLocations = this.locations;
+    //this.locations = [];
+    //this.originalLocations = this.locations;
 
     this.locationsService.search.subscribe(res => {
       this.search(res);

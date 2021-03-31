@@ -39,6 +39,7 @@ export class AddCollectionPage implements OnInit, OnDestroy {
   }
 
   public user;
+
   ngOnDestroy(): void {
   }
 
@@ -47,10 +48,10 @@ export class AddCollectionPage implements OnInit, OnDestroy {
 
   public async createCollection() {
 
-    // @ts-ignore
     const {value, cancelled} = await Modals.prompt({
       okButtonTitle: 'Save',
       title: `Create collection`,
+      message: `Create collection`,
       cancelButtonTitle: `Cancel`,
       inputPlaceholder: `Tag`
     });
@@ -94,10 +95,10 @@ export class AddCollectionPage implements OnInit, OnDestroy {
   }
 
   public async addCollectionUrl() {
-    // @ts-ignore
     const {value, cancelled} = await Modals.prompt({
       okButtonTitle: 'Save',
       title: `Add collection url`,
+      message: `Add collection url`,
       cancelButtonTitle: `Cancel`,
       inputPlaceholder: `Tag`
     });
