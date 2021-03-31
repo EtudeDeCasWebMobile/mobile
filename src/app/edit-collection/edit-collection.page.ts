@@ -336,7 +336,7 @@ export class EditCollectionPage implements OnInit, OnDestroy {
           path: `${this.collection?.tag}.geojson`
         });
         Toast.show({
-          text: `Wrote file '${result}'`,
+          text: `Wrote file '${result.uri}'`,
           position: 'bottom',
           duration: 'long'
         });
